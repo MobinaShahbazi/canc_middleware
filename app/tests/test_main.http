@@ -1,0 +1,58 @@
+# Test Endpoints
+
+# Returns Service Status as string
+
+POST http://127.0.0.1:42420/
+Accept: application/json
+
+###
+# Returns Service Status as an HTML
+
+GET http://127.0.0.1:42420
+Accept: application/html
+
+###
+# Create a new workspace
+POST http://127.0.0.1:42420/workspaces/create
+Content-Type: application/json
+
+{"name": "test-workspace", "description": "test-workspace-description", "code": "001", "meta": []}
+
+###
+# Get Workspace by id
+GET http://127.0.0.1:42420/workspaces/
+Content-Type: application/json
+
+###
+# Update Workspace with code
+POST http://127.0.0.1:42420/workspaces/insert
+Content-Type: application/json
+
+{
+  "code": "001",
+  "description": "test-workspace-description-updated",
+  "metadata_": []
+}
+
+###
+# Update Workspace with code
+POST http://127.0.0.1:42420/data
+Content-Type: application/json
+
+{
+  "workspace_code": "001",
+  "workspace_data": [
+    {
+      "pid": "199483ec-0eaf-422b-817d-40e0beb8e8f5",
+      "form_id": "6f1098c0-9f68-48e2-b3e9-3089d044c5b5",
+      "form_code": "Test form",
+      "data_": {}
+    },
+    {
+      "pid": "199483ec-0eaf-422b-817d-40e0beb8e8f5",
+      "form_id": "6f1098c0-9f68-48e2-b3e9-3089d044c5b6",
+      "form_code": "Test form 2",
+      "data_": {}
+    }
+  ]
+}
