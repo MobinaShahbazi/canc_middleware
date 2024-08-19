@@ -1,11 +1,14 @@
 import requests
+from sqlalchemy import true, false
 
-from app import config
+
+# from app import config
 
 
 class Middleware:
 
-    access_token = config.app_config.access_token
+    access_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyMzk2NjcyNywiZXhwIjoxNzI0MTM5NTI3LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.EYalpE1Cx1O9fHmZRmRkW5cS_iPv-7o3nNz7eKXTTei8bnMkfW45h7itKVdqk13dnly3QrX6H4nsJHPNt-BgE8qX4lCv2HXl7rC1M8wCcdzP0T7-qMPNV7hSuvb9WBbgB8RaziAz2ua27nl6K8Eyv1-zOljF5xPx0TX3j8KjeIHjT026O_ZODWCAlXkShso2Iczuzefeyf14JVHpvLn_xYCcAiBCz-WplxHPYioX-WUjRhrQ0C0mfU6IpfCA4gqdhPDowBhERg26o9F_4AtS7fewsy3yCnAL_Qybg6qKPaYevHK4wnKbSbTCAHsF2iC77qqmmKeFkuBJaMoa3gxyqQ'
+
     base_url = 'http://localhost:8000/v1.0'
     project_location = 'demo:breast-cancer'
 
@@ -18,18 +21,19 @@ class Middleware:
         return None
 
     def create_process_instance(self):
-        url = f'{self.base_url}/process-instances/{self.project_location}'
-        session = requests.Session()
-        request = requests.Request('POST', url, json={}, headers={'Authorization': self.access_token})
-        prepped = session.prepare_request(request)
-        r = session.send(prepped, verify=False)
+        # url = f'{self.base_url}/process-instances/{self.project_location}'
+        # session = requests.Session()
+        # request = requests.Request('POST', url, json={}, headers={'Authorization': self.access_token})
+        # prepped = session.prepare_request(request)
+        # r = session.send(prepped, verify=False)
 
         # response = requests.post(
         #     url=f'{self.base_url}/process-instances/{self.project_location}',
         #     headers={'Authorization': self.access_token}
         # )
         # result = response.json()
-        return r.json()
+        # return r.json()
+        pass
 
     def run_process_instance(self, result_create):
         response_run = requests.post(
@@ -71,24 +75,35 @@ class Middleware:
         answer = self.get_task_data(result_create, result_put)
         return answer
 
+    def direct_call(self, name, body):
+        response = requests.post(
+            url=f'{self.base_url}/messages/{name}?execution_mode=synchronous',
+            headers={'Authorization': self.access_token, 'Content-Type': 'application/json'},
+            json=body
+        )
+        result = response.json()
+        return result
 
-# access_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyMzk2NjcyNywiZXhwIjoxNzI0MTM5NTI3LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.EYalpE1Cx1O9fHmZRmRkW5cS_iPv-7o3nNz7eKXTTei8bnMkfW45h7itKVdqk13dnly3QrX6H4nsJHPNt-BgE8qX4lCv2HXl7rC1M8wCcdzP0T7-qMPNV7hSuvb9WBbgB8RaziAz2ua27nl6K8Eyv1-zOljF5xPx0TX3j8KjeIHjT026O_ZODWCAlXkShso2Iczuzefeyf14JVHpvLn_xYCcAiBCz-WplxHPYioX-WUjRhrQ0C0mfU6IpfCA4gqdhPDowBhERg26o9F_4AtS7fewsy3yCnAL_Qybg6qKPaYevHK4wnKbSbTCAHsF2iC77qqmmKeFkuBJaMoa3gxyqQ'
-#
-# base_url = 'http://localhost:8000/v1.0'
-# project_location = 'demo:breast-cancer'
-# mw = Middleware(access_token, base_url, project_location)
-# form = {
-#     "clinical_assessment": True,
-#     "biopsy_hist": 0,
-#     "chest_radiotherapy_hist": False,
-#     "personal_breast_cancer_hist": False,
-#     "personal_ovarian_cancer_hist": False,
-#     "personal_pancreatic_cancer_hist": False,
-#     "family_hist": False,
-#     "risk": "low",
-#     "age_of_diagnose": 40,
-#     "biopsy_date": 1390,
-#     "birth_date": 1340,
-#     "radiotherapy_date": 1390
-# }
-# print(mw.get_result(form))
+
+mw = Middleware()
+mw.direct_call('msg', {
+                              "clinical_assessment": True,
+                              "biopsy_hist": 0,
+                              "chest_radiotherapy_hist": False,
+                              "personal_breast_cancer_hist": False,
+                              "personal_ovarian_cancer_hist": False,
+                              "personal_pancreatic_cancer_hist": False,
+                              "family_hist": False,
+                              "risk": "low",
+                              "age_of_diagnose": 40,
+                              "biopsy_date": 1390,
+                              "birth_date": 1340,
+                              "radiotherapy_date": 1390
+                            })
+mw.direct_call('patient_consent', {"patient_consent": True})
+print(mw.direct_call('get_NID_phone', {"NID": "12345", "phone": "0912345678"}))
+# print(mw.direct_call('popcorn', {"size": "large"}))
+
+
+
+
