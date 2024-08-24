@@ -14,7 +14,6 @@ class GetToken:
     keycloak_base_url = None
     token = ''
 
-
     def prepare(func):
         def wrapper(self, *args, **kwargs):
             if self.openid_token_url is None:

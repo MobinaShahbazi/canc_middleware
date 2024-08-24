@@ -20,7 +20,8 @@ class WSDataDAO(APIBaseClass):
 
         mw = Middleware()
         obj_in_data = jsonable_encoder(request_body)
-        result = mw.direct_call('msg', obj_in_data)
+        mw.direct_call('msg', obj_in_data)
+        result = mw.request_result
         return result
     def create2(self, request_body: schemas.PatientConsentCreate, db: Session = Depends(get_db)):
 

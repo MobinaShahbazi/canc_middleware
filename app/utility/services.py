@@ -1,30 +1,34 @@
+import os
+
 import requests
-from check_token import is_token_expired
-from get_token import get_token_instance
+from app import config
+from app.utility.check_token import is_token_expired
+from app.utility.get_token import get_token_instance
+
+
+# # from check_token import is_token_expired
+# from get_token import get_token_instance
 
 
 
 
 class Middleware:
-    # access_token = config.app_config.access_token
-    # base_url = config.app_config.base_url
-    # project_location = config.app_config.project_location
+    base_url = config.app_config.base_url
+    project_location = config.app_config.project_location
 
     expired_token: str = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDA0ODc2NywiZXhwIjoxNzI0MjIxNTY4LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.CukXixVSNq_fZib-YCTn-B-FgAvwX-p1wprZ_MMh5iaOM5nSey83lkV_3vYTbL1ypozqaMnyNAsoDUsv8RLR87jbt3SsMyQUG4sFjYMZPGx2c8n0v2KcePtPRI8toxzjT7KkZ2vJcP1gqi4syBBDqrE0zDjW65ApYML8RaQLOiDF75f5m3Kh-obUn0quRb7aGJlFdKZx8DhUpHz8yvW4EpOyIU-NXCc2hN8qHteVfXoKzlR-2QrFnHV1oPecw9Iuhov6EpWZSTqO-GBB1BwPXLBa6yfD4SosFfscq9yZuzZmhZuqez_D-DJWdP0MRHpnEwoMmpsPli_3XsDWeM5mJg'
-    token: str = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDIzNzU0MywiZXhwIjoxNzI0NDEwMzQzLCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.DwqHahSfXzUVxUkAiebnldhDIanoXGzjb_cyCKB7o5if85huAnjFOH6CcpLYwf2jfDgRu3OlmyqlH1kBDV-cfyw43zhJdC9EkMJI87wXlWLVHJbuUcnr3zZMk-6phftk2qop4LAU_d4Px457yfL9E79s8xJ533E8bwuaCKbTWaIp7HQcSPBBp86pYxOr-dDhBOV0CppUgCNY_3OSfjeoiMgndwMFcoCdUX8tNFZSG-KYNy9mMaUUtU77NoMhJDJkGBN3K18TpVSAfE0uEOdnGkOoObcW2gURs7X3qMcrgapbcf7Qdpv8Q4DmjDyGuuQmtlHT6l1P4Smx-dW0aFzFXQ'
-
+    token: str = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDQ3OTI1OCwiZXhwIjoxNzI0NjUyMDU5LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.YuE4Kf8TjC5Ew3mpsHVOTIYD0lN0IW304sUoDXzwkPFF9s7bNsBzUN2_PCF1OXHUTFDMLwGvC9OLwEfMAhlAP_LYW3veFd9ldH65FsbQPXv_vtHFYZFKj6xyzmDS3T0ieSDVacNDT_YvXzHQzvAdD_wtXP4Eu1vg8MwP6PkbpU7F45IoWtUsgm9wW7sAQQXSC4R7Vlq57ncBo-HVwvoOPfTpgwqNnQoGevnijeR9RNMS083s0N77mKx4SuLTSaqU5-i98bD4SmQ_DiqMcZkgBNqeFdxrLOmahp8odkylsG4fVVwHOdwNr4tU1OjcHgfCDW5JiD5wU7_PrxgrNO0PRg'
     access_token: str = expired_token
-    # base_url: str = "http://host.docker.internal:8000/v1.0"
-    base_url: str = "http://localhost:8000/v1.0"
-    project_location: str = "demo:breast-cancer"
+
     request_result = ''
 
     def token_handler(func):
         def wrapper(self, *args, **kwargs):
             if is_token_expired(self.access_token):
+                print("it is expired")
                 get_token_instance.get_auth_token()
                 self.access_token = get_token_instance.token
-            request_result = func(self, *args, **kwargs)
+            self.request_result = func(self, *args, **kwargs)
         return wrapper
 
 
@@ -95,27 +99,10 @@ class Middleware:
             json=body
         )
         result = response.json()
-        print(result)
         return result
 
-mw = Middleware()
-mw.direct_call('popcorn', {"size": "large"})
-print(mw.request_result)
-
-# print(mw.direct_call('msg', {
-#                               "clinical_assessment": True,
-#                               "biopsy_hist": 0,
-#                               "chest_radiotherapy_hist": False,
-#                               "personal_breast_cancer_hist": False,
-#                               "personal_ovarian_cancer_hist": False,
-#                               "personal_pancreatic_cancer_hist": False,
-#                               "family_hist": False,
-#                               "risk": "low",
-#                               "age_of_diagnose": 40,
-#                               "biopsy_date": 1390,
-#                               "birth_date": 1340,
-#                               "radiotherapy_date": 1390
-#                             }))
-
-# print(mw.direct_call('popcorn', {"size": "large"}))
+# print(os.getenv("BASE_URL"))
+# mw = Middleware()
+# mw.direct_call('popcorn', {"size": "large"})
 # print(mw.request_result)
+
