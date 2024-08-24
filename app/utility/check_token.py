@@ -1,0 +1,19 @@
+import requests
+from app.config import app_config
+
+# expired_token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDA0ODc2NywiZXhwIjoxNzI0MjIxNTY4LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.CukXixVSNq_fZib-YCTn-B-FgAvwX-p1wprZ_MMh5iaOM5nSey83lkV_3vYTbL1ypozqaMnyNAsoDUsv8RLR87jbt3SsMyQUG4sFjYMZPGx2c8n0v2KcePtPRI8toxzjT7KkZ2vJcP1gqi4syBBDqrE0zDjW65ApYML8RaQLOiDF75f5m3Kh-obUn0quRb7aGJlFdKZx8DhUpHz8yvW4EpOyIU-NXCc2hN8qHteVfXoKzlR-2QrFnHV1oPecw9Iuhov6EpWZSTqO-GBB1BwPXLBa6yfD4SosFfscq9yZuzZmhZuqez_D-DJWdP0MRHpnEwoMmpsPli_3XsDWeM5mJg'
+token = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDIzNzU0MywiZXhwIjoxNzI0NDEwMzQzLCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.DwqHahSfXzUVxUkAiebnldhDIanoXGzjb_cyCKB7o5if85huAnjFOH6CcpLYwf2jfDgRu3OlmyqlH1kBDV-cfyw43zhJdC9EkMJI87wXlWLVHJbuUcnr3zZMk-6phftk2qop4LAU_d4Px457yfL9E79s8xJ533E8bwuaCKbTWaIp7HQcSPBBp86pYxOr-dDhBOV0CppUgCNY_3OSfjeoiMgndwMFcoCdUX8tNFZSG-KYNy9mMaUUtU77NoMhJDJkGBN3K18TpVSAfE0uEOdnGkOoObcW2gURs7X3qMcrgapbcf7Qdpv8Q4DmjDyGuuQmtlHT6l1P4Smx-dW0aFzFXQ'
+
+def is_token_expired(token):
+    response = requests.get(
+        url=f'http://localhost:8000/v1.0/process-models',
+        headers={'Authorization': token}
+    )
+    result = response.json()
+    if 'status_code' in result and result['status_code'] == 401:
+        return True
+    else:
+        return False
+
+
+# print(is_token_expired(token))

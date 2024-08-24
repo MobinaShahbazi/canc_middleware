@@ -5,7 +5,7 @@ from app.dependencies import get_db
 from app import schemas
 from . import APIBaseClass
 
-from app.utility.middleware import Middleware
+from app.utility.services import Middleware
 
 
 class WSDataDAO(APIBaseClass):
