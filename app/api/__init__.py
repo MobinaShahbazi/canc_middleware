@@ -4,4 +4,4 @@ from .general import AppInfo
 
 # import api specific endpoints here
 # from .workspaces import WorkspacesDAO
-from .ws_data import WSDataDAO
+from .spiff_workflow import SpiffWorkflowDAO

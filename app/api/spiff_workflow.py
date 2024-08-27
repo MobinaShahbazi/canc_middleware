@@ -8,7 +8,7 @@ from . import APIBaseClass
 from app.utility.services import Middleware
 
 
-class WSDataDAO(APIBaseClass):
+class SpiffWorkflowDAO(APIBaseClass):
 
     def __init__(self):
         super().__init__()

@@ -1,5 +1,4 @@
 import os
-
 from dotenv import load_dotenv
 from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings
@@ -13,25 +12,26 @@ else:
 class CommonSettings(BaseSettings):
     # Basic application configs
     app_port: int = 42420
-
-    # access_token: str = os.getenv('ACCESS_TOKEN')
-    # base_url: str = os.getenv("BASE_URL")
-    # project_location: str = os.getenv('PROJECT_LOCATION')
-
-    access_token: str = "eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDE2MjY2MCwiZXhwIjoxNzI0MzM1NDYxLCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.fZ-YmKD-9hqrdRoispfH9AOuTpbMa0hgesYJtuvnvHxRpNIDAbrHFSw2-Cch_yRW1pTHpB29HedmLGarvV26P6loyDDw5UMF9GZd8Xjk5aAm4XIVYoR4TXbttfOJq5PSpUn4qpteaPpiMbwxZfLnlwOHOKj4U-AG76CDCz_Orw4asdeL2W1G480U3c6CDwXKVnMuVPPBo_mGUCXAbeK5tn_fXnCkdJqLLfho30334IsWQqKmcq5VvuQYpf9h8PqRM4E1qdoHW20siPyGaoWVxgDx12JHaw9tckupZFM12lDiB6xJNUbYZjTNnMTqbsvv8Eqf6LUEvRFob7pTn2IiMA"
-    # base_url: str = "http://host.docker.internal:8000/v1.0"
-    base_url: str = "http://localhost:8000/v1.0"
+    # if "ENV_FILE_PATH" in os.environ:
+    #     access_token: str = os.getenv('ACCESS_TOKEN')
+    #     base_url: str = os.getenv('BASE_URL')
+    #     project_location: str = os.getenv('PROJECT_LOCATION')
+    # else:
+    access_token: str = "eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDA0ODc2NywiZXhwIjoxNzI0MjIxNTY4LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.CukXixVSNq_fZib-YCTn-B-FgAvwX-p1wprZ_MMh5iaOM5nSey83lkV_3vYTbL1ypozqaMnyNAsoDUsv8RLR87jbt3SsMyQUG4sFjYMZPGx2c8n0v2KcePtPRI8toxzjT7KkZ2vJcP1gqi4syBBDqrE0zDjW65ApYML8RaQLOiDF75f5m3Kh-obUn0quRb7aGJlFdKZx8DhUpHz8yvW4EpOyIU-NXCc2hN8qHteVfXoKzlR-2QrFnHV1oPecw9Iuhov6EpWZSTqO-GBB1BwPXLBa6yfD4SosFfscq9yZuzZmhZuqez_D-DJWdP0MRHpnEwoMmpsPli_3XsDWeM5mJg"
+    base_url: str = "http://host.docker.internal:8000/v1.0"
     project_location: str = "demo:breast-cancer"
 
+
     # General application configs
-    app_name: str = 'Development'
+    app_name: str = 'Middleware'
     app_version: str = '0.0.1'
 
     # TODO Can use PostgresDsn data type here but results in an error
     # SWH Database Configs
     db_name: str = 'middleware'
-    # sqlalchemy_database_url: str = f'postgresql+psycopg2://postgres:1211381msh@127.0.0.1:5432/{db_name}'
-    sqlalchemy_database_url: str = f'postgresql+psycopg2://postgres:1211381msh@localhost:5432/{db_name}'
+    # db_base_url: str = os.getenv('DB_BASE_URL')
+    db_base_url: str = "postgresql+psycopg2://postgres:1211381msh@host.docker.internal:5432"
+    sqlalchemy_database_url: str = f'{db_base_url}/{db_name}'
 
 
 app_config = CommonSettings()

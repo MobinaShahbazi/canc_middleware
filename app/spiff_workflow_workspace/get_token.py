@@ -7,7 +7,7 @@ class GetToken:
     password = "admin"
     realm_name = "spiffworkflow"
     OPEN_ID_CODE = ":this_is_not_secure_do_not_use_in_production"
-    backend_base_url = "http://localhost:8000"
+    backend_base_url = "http://host.docker.internal:8000"
     backend_client_id = "spiffworkflow-backend"
     backend_client_secret = "JXeQExm0JhQPLumgHtIIqf52bDalHz0q"
     openid_token_url = None
@@ -25,8 +25,8 @@ class GetToken:
                             raise Exception("Could not determine openid url based on backend url")
                         env_domain = match.group(1)
                         self.keycloak_base_url = "https://keycloak.${env_domain}"
-                    elif "localhost:7000" in self.backend_base_url:
-                        self.keycloak_base_url = "http://localhost:7000"
+                    elif "host.docker.internal:7000" in self.backend_base_url:
+                        self.keycloak_base_url = "http://host.docker.internal:7000"
                     self.openid_token_url = f"{self.keycloak_base_url}/realms/{self.realm_name}/protocol/openid-connect/token"
                 else:
                     self.openid_token_url = f"{self.backend_base_url}/openid/token"

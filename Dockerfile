@@ -7,7 +7,7 @@ COPY ./requirements.txt /middleware/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /middleware/requirements.txt
 
 COPY ./app /middleware/app
-#COPY ./alembic /middleware/alembic
+COPY ./envs /middleware/envs
 
 #COPY ./alembic.ini /middleware/alembic.ini
 
