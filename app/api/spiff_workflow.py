@@ -17,12 +17,12 @@ class SpiffWorkflowDAO(APIBaseClass):
         self.router.add_api_route('/part3', self.create3, methods=['POST'])
 
     def create(self, request_body: schemas.FormCreate, db: Session = Depends(get_db)):
-
         mw = Middleware()
         obj_in_data = jsonable_encoder(request_body)
         mw.direct_call('msg', obj_in_data)
         result = mw.request_result
         return result
+
     def create2(self, request_body: schemas.PatientConsentCreate, db: Session = Depends(get_db)):
 
         mw = Middleware()

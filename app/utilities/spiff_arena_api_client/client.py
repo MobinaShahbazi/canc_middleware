@@ -32,6 +32,7 @@ class Middleware:
     def request_create(self, method, url, body=None):
         request = requests.Request(method, url, json=body)
 
+
         return None
 
     def create_process_instance(self):
