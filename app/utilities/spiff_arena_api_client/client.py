@@ -1,63 +1,111 @@
-import os
-
 import requests
-from app import config
-from app.utility.check_token import is_token_expired
-from app.utility.get_token import get_token_instance
-
-# # from check_token import is_token_expired
-# from get_token import get_token_instance
+import logging
+from .auth import is_token_expired
+from .get_token import get_token_instance
 
 
-class Middleware:
-    base_url = config.app_config.base_url
-    project_location = config.app_config.project_location
+class SpiffArenaAPIClient:
 
-    expired_token: str = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDA0ODc2NywiZXhwIjoxNzI0MjIxNTY4LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.CukXixVSNq_fZib-YCTn-B-FgAvwX-p1wprZ_MMh5iaOM5nSey83lkV_3vYTbL1ypozqaMnyNAsoDUsv8RLR87jbt3SsMyQUG4sFjYMZPGx2c8n0v2KcePtPRI8toxzjT7KkZ2vJcP1gqi4syBBDqrE0zDjW65ApYML8RaQLOiDF75f5m3Kh-obUn0quRb7aGJlFdKZx8DhUpHz8yvW4EpOyIU-NXCc2hN8qHteVfXoKzlR-2QrFnHV1oPecw9Iuhov6EpWZSTqO-GBB1BwPXLBa6yfD4SosFfscq9yZuzZmhZuqez_D-DJWdP0MRHpnEwoMmpsPli_3XsDWeM5mJg'
-    token: str = 'eyJhbGciOiJSUzI1NiIsImtpZCI6InNwaWZmd29ya2Zsb3dfYmFja2VuZF9vcGVuX2lkIiwidHlwIjoiSldUIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvb3BlbmlkIiwiYXVkIjpbInNwaWZmd29ya2Zsb3ctYmFja2VuZCIsIkpYZVFFeG0wSmhRUEx1bWdIdElJcWY1MmJEYWxIejBxIl0sImlhdCI6MTcyNDQ3OTI1OCwiZXhwIjoxNzI0NjUyMDU5LCJzdWIiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5Ac3BpZmZ3b3JrZmxvdy5vcmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJBZG1pbiJ9.YuE4Kf8TjC5Ew3mpsHVOTIYD0lN0IW304sUoDXzwkPFF9s7bNsBzUN2_PCF1OXHUTFDMLwGvC9OLwEfMAhlAP_LYW3veFd9ldH65FsbQPXv_vtHFYZFKj6xyzmDS3T0ieSDVacNDT_YvXzHQzvAdD_wtXP4Eu1vg8MwP6PkbpU7F45IoWtUsgm9wW7sAQQXSC4R7Vlq57ncBo-HVwvoOPfTpgwqNnQoGevnijeR9RNMS083s0N77mKx4SuLTSaqU5-i98bD4SmQ_DiqMcZkgBNqeFdxrLOmahp8odkylsG4fVVwHOdwNr4tU1OjcHgfCDW5JiD5wU7_PrxgrNO0PRg'
-    access_token: str = expired_token
+    def __init__(self, settings):
+        self.base_api_url = settings.spiff_arena_base_api_url
+        self.base_url = settings.spiff_arena_base_url
 
-    request_result = ''
+        if not settings.spiff_arena_token:
+            self.token = self.get_token()
+            self.access_token = self.token['access_token']
+        else:
+            self.access_token = settings.spiff_arena_token
 
-    def token_handler(func):
+        # TODO: Project location or modified_process_group_id should be passed to the client on method calls.
+        # project_location = app_config.project_location
+        request_result = ''
+
+    def get_token(self):
+        auth = get_token_instance
+        auth.backend_base_url = self.base_url
+        try:
+            self.token = auth.get_auth_token()
+            logging.log(level=logging.INFO, msg='BPMN service token obtained successfully')
+        except Exception as e:
+            logging.log(level=logging.ERROR, msg='An error occured in obtaining Spiff Arena token')
+            raise
+        # self.token = auth.token
+        self.access_token = self.token['access_token']
+
+    def check_token(func):
         def wrapper(self, *args, **kwargs):
             if is_token_expired(self.access_token):
-                print("it is expired")
-                get_token_instance.get_auth_token()
-                self.access_token = get_token_instance.token
-            self.request_result = func(self, *args, **kwargs)
+                logging.log(level=logging.WARNING, msg="BPMN Service token expired, obtaining a new one.")
+                self.get_token()
+
         return wrapper
 
+    # TODO this should be decorated with check_token as soon as getting token directly from spiff arena works
+    def http_request(self, method, url, body=None):
+        full_url = f'{self.base_api_url}/{url}'
+        request = requests.Request(method, full_url, json=body, headers={'Authorization': self.access_token})
+        prepared = request.prepare()
+        with requests.Session() as session:
+            response = session.send(prepared)
+        return response.json()
 
-    def request_create(self, method, url, body=None):
-        request = requests.Request(method, url, json=body)
-
-
-        return None
-
-    def create_process_instance(self):
-        # url = f'{self.base_url}/process-instances/{self.project_location}'
-        # session = requests.Session()
-        # request = requests.Request('POST', url, json={}, headers={'Authorization': self.access_token})
-        # prepped = session.prepare_request(request)
-        # r = session.send(prepped, verify=False)
-
+    @check_token
+    def direct_call(self, name, body):
         response = requests.post(
-            url=f'{self.base_url}/process-instances/{self.project_location}',
-            headers={'Authorization': self.access_token}
+            url=f'{self.base_api_url}/messages/{name}?execution_mode=synchronous',
+            headers={'Authorization': self.access_token, 'Content-Type': 'application/json'},
+            json=body
         )
-        result = response.json()
-        return result
+        results = response.json()
+        return results
+
+    def create_process_instance(self, modified_process_model_identifier):
+        url = f'process-instances/{modified_process_model_identifier}'
+        results = self.http_request(method='POST', url=url)
+        return results
+
+    def get_process_instances(self, process_model_identifier):
+        url = f'process-instances'
+        body = {
+            "report_metadata":
+                {
+                    "columns": [],
+                    "filter_by": [
+                        {
+                            "field_name": "process_model_identifier",
+                            "field_value": process_model_identifier
+                        }
+                    ],
+                    "order_by": []
+                }
+
+        }
+        results = self.http_request(method='POST', url=url, body=body)
+        return results
+
+    # def create_process_instance(self):
+    #     # url = f'{self.base_api_url}/process-instances/{self.project_location}'
+    #     # session = requests.Session()
+    #     # request = requests.Request('POST', url, json={}, headers={'Authorization': self.access_token})
+    #     # prepped = session.prepare_request(request)
+    #     # r = session.send(prepped, verify=False)
+    #
+    #     response = requests.post(
+    #         url=f'{self.base_api_url}/process-instances/{self.project_location}',
+    #         headers={'Authorization': self.access_token}
+    #     )
+    #     result = response.json()
+    #     return result
 
     def run_process_instance(self, result_create):
         response_run = requests.post(
-            url=f'{self.base_url}/process-instances/{self.project_location}/{result_create["id"]}/run',
+            url=f'{self.base_api_url}/process-instances/{self.project_location}/{result_create["id"]}/run',
             headers={'Authorization': self.access_token}
         )
 
     def trigger_process(self, result_create):
         response_trigger = requests.get(
-            url=f'{self.base_url}/tasks?process_instance_id={result_create["id"]}',
+            url=f'{self.base_api_url}/tasks?process_instance_id={result_create["id"]}',
             headers={'Authorization': self.access_token}
         )
         result_trigger = response_trigger.json()
@@ -65,7 +113,7 @@ class Middleware:
 
     def put_data(self, form, result_create, result_trigger):
         response_put = requests.put(
-            url=f'{self.base_url}/tasks/{result_create["id"]}/{result_trigger["results"][0]["id"]}',
+            url=f'{self.base_api_url}/tasks/{result_create["id"]}/{result_trigger["results"][0]["id"]}',
             headers={'Authorization': self.access_token},
             json=form
         )
@@ -75,7 +123,7 @@ class Middleware:
 
     def get_task_data(self, result_create, result_put):
         response_task_data = requests.get(
-            url=f'{self.base_url}/task-data/{self.project_location}/{result_create["id"]}/{result_put["id"]}',
+            url=f'{self.base_api_url}/task-data/{self.project_location}/{result_create["id"]}/{result_put["id"]}',
             headers={'Authorization': self.access_token}
         )
         result_task_data = response_task_data.json()
@@ -88,19 +136,3 @@ class Middleware:
         result_put = self.put_data(form, result_create, result_trigger)
         answer = self.get_task_data(result_create, result_put)
         return answer
-
-    @token_handler
-    def direct_call(self, name, body):
-        response = requests.post(
-            url=f'{self.base_url}/messages/{name}?execution_mode=synchronous',
-            headers={'Authorization': self.access_token, 'Content-Type': 'application/json'},
-            json=body
-        )
-        result = response.json()
-        return result
-
-# print(os.getenv("BASE_URL"))
-# mw = Middleware()
-# mw.direct_call('popcorn', {"size": "large"})
-# print(mw.request_result)
-

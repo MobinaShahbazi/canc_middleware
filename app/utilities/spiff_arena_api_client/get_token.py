@@ -25,15 +25,15 @@ class GetToken:
                             raise Exception("Could not determine openid url based on backend url")
                         env_domain = match.group(1)
                         self.keycloak_base_url = "https://keycloak.${env_domain}"
-                    elif "host.docker.internal:7000" in self.backend_base_url:
-                        self.keycloak_base_url = "http://host.docker.internal:7000"
+                    else:
+                        self.keycloak_base_url = self.backend_base_url
                     self.openid_token_url = f"{self.keycloak_base_url}/realms/{self.realm_name}/protocol/openid-connect/token"
                 else:
                     self.openid_token_url = f"{self.backend_base_url}/openid/token"
             self.token = func(self, *args, **kwargs)
         return wrapper
 
-    @prepare
+
     def get_auth_token(self):
         backend_basic_auth_string = f"{self.backend_client_id}:{self.backend_client_secret}"
         backend_basic_auth_bytes = bytes(backend_basic_auth_string, encoding="ascii")
@@ -49,14 +49,12 @@ class GetToken:
             "password": self.password,
             "client_id": self.backend_client_id,
         }
-
-        if self.openid_token_url is None:
-            raise Exception("Please specify the OPENID_TOKEN_URL")
+        self.openid_token_url = f"{self.backend_base_url}/openid/token"
+        # if self.openid_token_url is None:
+        #     raise Exception("Please specify the OPENID_TOKEN_URL")
 
         response = requests.post(self.openid_token_url, data=data, headers=headers, timeout=15)
-        return response.json()['access_token']
+        return response.json()
 
 
 get_token_instance = GetToken()
-# get_token_instance.get_auth_token()
-# print(get_token_instance.token)

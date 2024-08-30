@@ -1,29 +1,30 @@
 import os
-
 import uvicorn
-from fastapi import FastAPI
-
-from app.config import app_config
-from app.db import db_engine
+from fastapi import APIRouter, FastAPI
+from settings import app_config
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
-# import api endpoint here
-from app.api import AppInfo, SpiffWorkflowDAO
+from app.api import routers
+
 
 # Initialize the application
-app = FastAPI()
+app = FastAPI(
+    title=app_config.app_name,
+    version=app_config.app_version,
+    description=app_config.app_description,
+    summary=app_config.app_summary
+)
 
 # Set templating preferences
 script_dir = os.path.dirname(__file__)
 app.mount('/static', StaticFiles(directory=os.path.join(script_dir, "static/")), name='static')
-# templates = Jinja2Templates(directory='templates/')
 
-# Define some common endpoints for all services
-app.include_router(AppInfo().router)
-
-# Add API routes here
-app.include_router(SpiffWorkflowDAO().router)
+# add routers automatically from api module
+for x_router in routers:
+    if x_router and isinstance(x_router, APIRouter):
+        app.include_router(x_router)
+        continue
+    print(f'routers expected an instance of APIRouter but get {type(x_router)}')
 
 if __name__ == '__main__':
     uvicorn.run(app, host='0.0.0.0', port=app_config.app_port)
