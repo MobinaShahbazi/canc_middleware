@@ -12,22 +12,15 @@ class BreastCancerScreening(APIBaseClass):
         super().__init__()
         self.router.add_api_route('/breast-cancer-screening', self.get_survey, methods=['GET'], tags=['Breast Cancer Screening'],
                                   description='Initiates screening process from the start with a message.')
-        self.router.add_api_route('/part1', self.create, methods=['POST'], tags=['Breast Cancer Screening'],
+        self.router.add_api_route('/submit', self.submit, methods=['POST'], tags=['Breast Cancer Screening'],
                                   description='Initiates screening process from the start with a message.')
-        self.router.add_api_route('/part2', self.create2, methods=['POST'], tags=['Breast Cancer Screening'],
-                                  description='Calls for patient consent')
-        self.router.add_api_route('/part3', self.create3, methods=['POST'], tags=['Breast Cancer Screening'],
-                                  description='Initiates screening process from the start with a message.')
-        self.router.add_api_route('/process-instances', self.create_process_instance, methods=['POST'],
-                                  tags=['Breast Cancer Screening'],
-                                  description='Creates a process instance')
 
         self.modified_process_model_identifier = 'cancer-breast-screening:breast-cancer-screening-self-report'
 
     def get_survey(self, request: Request):
         return templates.TemplateResponse("breast-cancer-screening.html", context={'request': Request})
 
-    def create(self, request_body: schemas.FormCreate):
+    def submit(self, request_body: schemas.FormCreate):
         mw = spiff_client
         obj_in_data = jsonable_encoder(request_body)
         mw.direct_call('msg', obj_in_data)
