@@ -1,5 +1,5 @@
 from . import APIBaseClass
-from app.config import app_config
+from app.settings import app_config
 from app.templates import templates
 from fastapi import Request
 from fastapi.responses import HTMLResponse

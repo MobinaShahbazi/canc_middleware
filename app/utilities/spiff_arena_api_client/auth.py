@@ -1,6 +1,5 @@
 import logging
 import requests
-from app import config
 
 
 def is_token_expired(token):
