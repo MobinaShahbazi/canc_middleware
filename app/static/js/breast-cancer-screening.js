@@ -1,17 +1,7 @@
 // const SURVEY_ID = 1;
 
-const surveyJson = {
-    elements: [{
-        name: "FirstName",
-        title: "Enter your first name:",
-        type: "text"
-    }, {
-        name: "LastName",
-        title: "Enter your last name:",
-        type: "text"
-    }]
-};
-
+const response = fetch('survey.json');
+const surveyJson = response.json
 const survey = new Survey.Model(surveyJson);
 
 function alertResults (sender) {
