@@ -4,13 +4,15 @@ from app import schemas
 from app.templates import templates
 from . import APIBaseClass
 from app.settings import spiff_client
+from fastapi.responses import HTMLResponse
 
 
 class BreastCancerScreening(APIBaseClass):
 
     def __init__(self):
         super().__init__()
-        self.router.add_api_route('/breast-cancer-screening', self.get_survey, methods=['GET'], tags=['Breast Cancer Screening'],
+        self.router.add_api_route('/breast-cancer-screening', self.get_survey, methods=['GET'],
+                                  tags=['Breast Cancer Screening'], response_class=HTMLResponse,
                                   description='Initiates screening process from the start with a message.')
         self.router.add_api_route('/submit', self.submit, methods=['POST'], tags=['Breast Cancer Screening'],
                                   description='Initiates screening process from the start with a message.')
@@ -18,7 +20,7 @@ class BreastCancerScreening(APIBaseClass):
         self.modified_process_model_identifier = 'cancer-breast-screening:breast-cancer-screening-self-report'
 
     def get_survey(self, request: Request):
-        return templates.TemplateResponse("breast-cancer-screening.html", context={'request': Request})
+        return templates.TemplateResponse("breast-cancer-screening.html", context={'request': request})
 
     def submit(self, request_body: schemas.FormCreate):
         mw = spiff_client

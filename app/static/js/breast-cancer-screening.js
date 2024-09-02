@@ -1,7 +1,9 @@
 // const SURVEY_ID = 1;
 
-const response = fetch('survey.json');
+/**const response = fetch('survey.json');
 const surveyJson = response.json
+ import {surveyJson} from './survey.js'**/
+
 const survey = new Survey.Model(surveyJson);
 
 function alertResults (sender) {
