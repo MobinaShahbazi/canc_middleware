@@ -1,0 +1,4 @@
+import json
+
+# Basic Test case
+response_json_case1 = json.loads('{"question14_1":"//01","question15_1":"//01","question5_1":"//01","question6_1":"//01","question7_1_1":"//01","question7_1_2":"//01","question7_1_3":"//01","question7_2_1":"//01","question7_3_1":"//01","question7_4_1":"//01","video":true,"birth_year":1365,"birth_month":1,"province":"اردبیل","height":172,"weight":95,"cancq4":16,"child_birth_history":false,"smoking_history":"false","contraceptive_history":"1","clinical_examination_history":"false","mammography_history":"false","ultrasound_history":"false","biopsy_history":"false","radiothrapy_history":"false","brca_mutation":"1","personal_cancer_history":"false","question8":"false","question38":"4","question9":"false","question10":"false","question11":"false","question12":"false","question99":"false","question13":"false"}')

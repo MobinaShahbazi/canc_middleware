@@ -1,10 +1,9 @@
 import logging
 import requests
 
-
-def is_token_expired(token):
+def is_token_expired(token, base_url):
     response = requests.get(
-        url=f'{config.app_config.base_url}/process-models',
+        url=f'{base_url}/process-models',
         headers={'Authorization': token}
     )
     result = response.json()
