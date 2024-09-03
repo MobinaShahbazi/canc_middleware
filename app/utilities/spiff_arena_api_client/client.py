@@ -34,7 +34,7 @@ class SpiffArenaAPIClient:
 
     def check_token(func):
         def wrapper(self, *args, **kwargs):
-            if is_token_expired(self.access_token):
+            if is_token_expired(self.access_token, self.base_api_url):
                 logging.log(level=logging.WARNING, msg="BPMN Service token expired, obtaining a new one.")
                 self.get_token()
 
@@ -49,7 +49,7 @@ class SpiffArenaAPIClient:
             response = session.send(prepared)
         return response.json()
 
-    @check_token
+
     def direct_call(self, name, body):
         response = requests.post(
             url=f'{self.base_api_url}/messages/{name}?execution_mode=synchronous',

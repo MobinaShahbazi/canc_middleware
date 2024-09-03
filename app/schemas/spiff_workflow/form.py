@@ -2,6 +2,10 @@ from typing import Dict, Any, Optional, Type
 from pydantic import BaseModel
 
 
+class FormBase(BaseModel):
+    survey_response: dict
+
+
 class Form(BaseModel):
 
     clinical_assessment: bool

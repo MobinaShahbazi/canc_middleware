@@ -1,4 +1,4 @@
-const saveSurveyUrl = "https://locahost:42420/breast-cancer-screening/submit"
+const saveSurveyUrl = "http://localhost:42420/screenings/breast-cancer/v1/submit"
 const surveyJson = {
   "pages": [
     {

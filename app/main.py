@@ -4,6 +4,8 @@ from fastapi import APIRouter, FastAPI
 from settings import app_config
 from fastapi.staticfiles import StaticFiles
 
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.api import routers
 
 
@@ -13,6 +15,16 @@ app = FastAPI(
     version=app_config.app_version,
     description=app_config.app_description,
     summary=app_config.app_summary
+)
+
+origins = ['*']
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Set templating preferences
