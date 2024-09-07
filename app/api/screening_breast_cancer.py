@@ -29,6 +29,7 @@ class BreastCancerScreening(APIBaseClass):
                                           context={'request': request,
                                                    'form_name': form_name,
                                                    'form_submission_url': form_submission_url})
+
     def submit(self, request: schemas.FormBase) -> dict:
         mw = spiff_client
         obj_in_data = jsonable_encoder(request)
@@ -41,7 +42,11 @@ class BreastCancerScreening(APIBaseClass):
         result = mw.direct_call('patient_consent', obj_in_data)
         return result
 
-        
+    def create3(self, request_body: schemas.InfoCreate):
+        mw = spiff_client
+        obj_in_data = jsonable_encoder(request_body)
+        result = mw.direct_call('get_NID_phone', obj_in_data)
+        return result
 
     def create_process_instance(self):
         results = spiff_client.get_process_instances(
