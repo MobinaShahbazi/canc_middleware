@@ -9,7 +9,7 @@ variables:
   HOST_DOCKER_COMPOSE: /home/vst/docker/disease-screening/cancer-screening-deployment/docker-compose.yml
   DOCKER_REGISTRY: pdr.vista-group.ir
   PROJECT_NAME: projects/ihio
-  IMAGE_NAME: pdr.hexatech.ir/canc-screening-middleware
+  IMAGE_NAME: pdr.vista-group.ir/canc-screening-middleware
 
 deploy:
   rules:
@@ -29,4 +29,4 @@ deploy:
     - echo $IMAGE_NAME
     - docker build -t $IMAGE_NAME .
     - docker save $IMAGE_NAME | gzip | ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR docker load
-    - ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR "docker-compose -f $HOST_DOCKER_COMPOSE up -d"
+    - ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR "docker-compose -f $HOST_DOCKER_COMPOSE --profile stg --env-file .env.stg up -d"
