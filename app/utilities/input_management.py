@@ -2,7 +2,7 @@ import datetime
 import json
 
 
-def make_info(input_obj):
+def reform_info(input_obj):
     self_assessment = {}
     self_assessment['birth_month'] = input_obj['birth_month']
     self_assessment['birth_year'] = input_obj['birth_year']
