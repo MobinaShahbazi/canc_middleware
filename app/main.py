@@ -1,7 +1,7 @@
 import os
 import uvicorn
 from fastapi import APIRouter, FastAPI
-from settings import app_config
+from app.settings import app_config
 from fastapi.staticfiles import StaticFiles
 
 from fastapi.middleware.cors import CORSMiddleware

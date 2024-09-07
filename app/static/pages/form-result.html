@@ -6,20 +6,33 @@
     <title>Results</title>
 </head>
 <body>
-    <h1>Results</h1>
-    <div id="resultDisplay"></div>
+<h1>Results</h1>
 
-    <script>
-        // Retrieve the result from session storage
-        const result = JSON.parse(sessionStorage.getItem('result'));
-
-        // Display the result on the page
-        const resultDisplay = document.getElementById('resultDisplay');
-        if (result) {
-            resultDisplay.innerHTML = `<p>${result.message}</p><p>Data: ${result.data.data}</p>`;
-        } else {
-            resultDisplay.innerHTML = '<p>No result found.</p>';
+<table>
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody id="jsonTable">
+    </tbody>
+</table>
+<script>
+    // Retrieve the result from session storage
+    const jsonData = JSON.parse(sessionStorage.getItem('result'));
+    const tableBody = document.getElementById("jsonTable");
+    const taskData = jsonData['task_data']
+    console.log(taskData)
+    for (let key in taskData) {
+        if (taskData.hasOwnProperty(key)) {
+            let row = `<tr>
+                           <td><b>${key}</b></td>
+                           <td>${taskData[key]}</td>
+                       </tr>`;
+            tableBody.innerHTML += row;
         }
-    </script>
+    }
+</script>
 </body>
 </html>
