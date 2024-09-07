@@ -1,4 +1,16 @@
 const surveyJson = {
+  "title": "NPS Survey Question",
+  "completedHtml": "<h3>Thank you for your feedback</h3>",
+  "completedHtmlOnCondition": [
+    {
+      "expression": "{nps_score} >= 9",
+      "html": "<h3>Thank you for your feedback</h3> <h4>We are glad that you love our product. Your ideas and suggestions will help us make it even better.</h4>"
+    },
+    {
+      "expression": "{nps_score} >= 6  and {nps_score} <= 8",
+      "html": "<h3>Thank you for your feedback</h3> <h4>We are glad that you shared your ideas with us. They will help us make our product better.</h4>"
+    }
+  ],
   "pages": [
     {
       "name": "page00",
@@ -221,11 +233,11 @@ const surveyJson = {
               "isRequired": true,
               "choices": [
                 {
-                  "value": false,
+                  "value": "false",
                   "text": "خیر"
                 },
                 {
-                  "value": true,
+                  "value": "true",
                   "text": "بله"
                 }
               ]
@@ -400,7 +412,7 @@ const surveyJson = {
               "type": "text",
               "name": "clinical_examination_year",
               "visibleIf": "{clinical_examination_history} = true",
-              "title": "سال",
+              "title": "سال آخرین مراجعه",
               "isRequired": true,
               "inputType": "number",
               "min": 1300,
@@ -413,7 +425,7 @@ const surveyJson = {
               "name": "clinical_examination_month",
               "visibleIf": "{clinical_examination_history} = true",
               "startWithNewLine": false,
-              "title": "ماه",
+              "title": "ماه آخرین مراجعه",
               "isRequired": true,
               "choices": [
                 {
@@ -517,7 +529,7 @@ const surveyJson = {
               "type": "text",
               "name": "mammography_year",
               "visibleIf": "{mammography_history} = true",
-              "title": "سال",
+              "title": "سال آخرین مراجعه",
               "isRequired": true,
               "inputType": "number",
               "min": 1300,
@@ -530,7 +542,7 @@ const surveyJson = {
               "name": "mammography_month",
               "visibleIf": "{mammography_history} = true",
               "startWithNewLine": false,
-              "title": "ماه",
+              "title": "ماه آخرین مراجعه",
               "isRequired": true,
               "choices": [
                 {
@@ -589,7 +601,7 @@ const surveyJson = {
               "visible": false,
               "clearIfInvisible": "none",
               "isRequired": true,
-              "expression": "{question14_1_year}+\"/\"+{question14_1_month}+\"/01\""
+              "expression": "{mammography_year}+\"/\"+{mammography_month}+\"/01\""
             },
             {
               "type": "radiogroup",
@@ -638,7 +650,7 @@ const surveyJson = {
               "type": "text",
               "name": "ultrasound_year",
               "visibleIf": "{ultrasound_history} = true",
-              "title": "سال",
+              "title": "سال آخرین مراجعه",
               "isRequired": true,
               "inputType": "number",
               "min": 1300,
@@ -651,7 +663,7 @@ const surveyJson = {
               "name": "ultrasound_month",
               "visibleIf": "{ultrasound_history} = true",
               "startWithNewLine": false,
-              "title": "ماه",
+              "title": "ماه آخرین مراجعه",
               "isRequired": true,
               "choices": [
                 {
@@ -710,7 +722,7 @@ const surveyJson = {
               "visible": false,
               "clearIfInvisible": "none",
               "isRequired": true,
-              "expression": "{question15_1_year}+\"/\"+{question15_1_month}+\"/01\""
+              "expression": "{ultrasound_year}+\"/\"+{ultrasound_month}+\"/01\""
             },
             {
               "type": "radiogroup",
@@ -831,7 +843,7 @@ const surveyJson = {
               "visible": false,
               "clearIfInvisible": "none",
               "isRequired": true,
-              "expression": "{question5_1_year}+\"/\"+{question5_1_month}+\"/01\""
+              "expression": "{biopsy_year}+\"/\"+{biopsy_month}+\"/01\""
             },
             {
               "type": "radiogroup",
@@ -842,15 +854,23 @@ const surveyJson = {
               "choices": [
                 {
                   "value": "1",
-                  "text": "پاسخ آزمایش LCIS، ALH یا ADH بوده است"
+                  "text": "نمی دانم"
                 },
                 {
                   "value": "2",
-                  "text": "پاسخ آزمایش به جز سه مورد گزینه قبلی بوده است"
+                  "text": "خوش‌ خیم (مثل کیست، قیبروآدنوم، نکروز چربی)"
                 },
                 {
                   "value": "3",
-                  "text": "پاسخ آزمایش را نمی دانم"
+                  "text": "موارد دیگر (مثل پاپیلوم، تومور فیلوییدس، اسکار رادیال)"
+                },
+                {
+                  "value": "4",
+                  "text": "پاسخ آزمایش LCIS، ALH یا ADH بوده است"
+                },
+                {
+                  "value": "5",
+                  "text": "بدخیم یا پیش بدخیم (DCIS)"
                 }
               ]
             }
@@ -862,7 +882,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "radiothrapy_history",
+              "name": "radiotherapy_history",
               "title": "آیا سابقه رادیوتراپی (پرتودرمانی) قفسه سینه دارید؟",
               "isRequired": true,
               "choices": [
@@ -878,8 +898,8 @@ const surveyJson = {
             },
             {
               "type": "text",
-              "name": "radiothrapy_year",
-              "visibleIf": "{radiothrapy_history} = true",
+              "name": "radiotherapy_year",
+              "visibleIf": "{radiotherapy_history} = true",
               "title": "سال",
               "isRequired": true,
               "inputType": "number",
@@ -890,8 +910,8 @@ const surveyJson = {
             },
             {
               "type": "dropdown",
-              "name": "radiothrapy_month",
-              "visibleIf": "{radiothrapy_history} = true",
+              "name": "radiotherapy_month",
+              "visibleIf": "{radiotherapy_history} = true",
               "startWithNewLine": false,
               "title": "ماه",
               "isRequired": true,
@@ -952,7 +972,7 @@ const surveyJson = {
               "visible": false,
               "clearIfInvisible": "none",
               "isRequired": true,
-              "expression": "{question6_1_year}+\"/\"+{question6_1_month}+\"/01\""
+              "expression": "{radiotherapy_year}+\"/\"+{radiotherapy_month}+\"/01\""
             }
           ]
         },
@@ -1114,7 +1134,7 @@ const surveyJson = {
             },
             {
               "type": "text",
-              "name": "question7_1_2_year",
+              "name": "year_of_diagnose_by_breast_cancer_left",
               "visibleIf": "{personal_cancer_history} = true and {personal_breast_cancer_history} = 'twoSide'",
               "title": "سال ابتلا (پستان چپ)",
               "isRequired": true,
@@ -1126,7 +1146,7 @@ const surveyJson = {
             },
             {
               "type": "dropdown",
-              "name": "question7_1_2_month",
+              "name": "month_of_diagnose_by_breast_cancer_left",
               "visibleIf": "{personal_cancer_history} = true and {personal_breast_cancer_history} = 'twoSide'",
               "startWithNewLine": false,
               "title": "ماه ابتلا (پستان چپ)",
@@ -1188,11 +1208,11 @@ const surveyJson = {
               "visible": false,
               "clearIfInvisible": "none",
               "isRequired": true,
-              "expression": "{question7_1_2_year}+\"/\"+{question7_1_2_month}+\"/01\""
+              "expression": "{year_of_diagnose_by_breast_cancer_left}+\"/\"+{month_of_diagnose_by_breast_cancer_left}+\"/01\""
             },
             {
               "type": "text",
-              "name": "question7_1_3_year",
+              "name": "year_of_diagnose_by_breast_cancer_right",
               "visibleIf": "{personal_cancer_history} = true and {personal_breast_cancer_history} = 'twoSide'",
               "title": "سال ابتلا (پستان راست)",
               "isRequired": true,
@@ -1204,7 +1224,7 @@ const surveyJson = {
             },
             {
               "type": "dropdown",
-              "name": "question7_1_3_month",
+              "name": "month_of_diagnose_by_breast_cancer_right",
               "visibleIf": "{personal_cancer_history} = true and {personal_breast_cancer_history} = 'twoSide'",
               "startWithNewLine": false,
               "title": "ماه ابتلا (پستان راست)",
@@ -1266,7 +1286,7 @@ const surveyJson = {
               "visible": false,
               "clearIfInvisible": "none",
               "isRequired": true,
-              "expression": "{question7_1_3_year}+\"/\"+{question7_1_3_month}+\"/01\""
+              "expression": "{year_of_diagnose_by_breast_cancer_right}+\"/\"+{month_of_diagnose_by_breast_cancer_right}+\"/01\""
             },
             {
               "type": "radiogroup",
@@ -1588,7 +1608,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question8",
+              "name": "familial_cancer_history",
               "title": "آیا در خانواده شما سابقه ابتلا به سرطان پستان، تخمدان، پروستات یا پانکراس وجود دارد؟",
               "isRequired": true,
               "choices": [
@@ -1607,18 +1627,18 @@ const surveyJson = {
         {
           "type": "panel",
           "name": "panel_8_1",
-          "visibleIf": "{question8} = true",
+          "visibleIf": "{familial_cancer_history} = true",
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question8_1",
+              "name": "familial_breast_cancer_history",
               "title": "سابقه ابتلا به سرطان پستان در خانواده",
               "isRequired": true,
               "validators": [
                 {
                   "type": "expression",
                   "text": "حداقل یکی از سوابق میبایست تکمیل گردد",
-                  "expression": "{question8_1} <> false or {question8_2} <> false or {question8_3} <> false or {question8_4} <> false or {question8_5} <> false  or {question8_6} <> false"
+                  "expression": "{familial_breast_cancer_history} <> false or {familial_ovary_cancer_history} <> false or {familial_pancreatic_cancer_history} <> false or {familial_prostate_cancer_history} <> false or {familial_men_breast_cancer_history} <> false  or {familial_other_cancer_history} <> false"
                 }
               ],
               "choices": [
@@ -1634,13 +1654,13 @@ const surveyJson = {
             },
             {
               "type": "paneldynamic",
-              "name": "panelQ8_1",
-              "visibleIf": "{question8} = true and {question8_1} = true",
+              "name": "familial_breast_cancer_list",
+              "visibleIf": "{familial_cancer_history} = true and {familial_breast_cancer_history} = true",
               "title": "اطلاعات فرد مبتلا",
               "templateElements": [
                 {
                   "type": "radiogroup",
-                  "name": "question8_1_0",
+                  "name": "familial_breast_cancer_side",
                   "title": "سابقه ابتلا به سرطان پستان در خانواده",
                   "isRequired": true,
                   "choices": [
@@ -1656,7 +1676,7 @@ const surveyJson = {
                 },
                 {
                   "type": "dropdown",
-                  "name": "question8_1_4",
+                  "name": "familial_breast_cancer_degree",
                   "title": "درجه فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1677,7 +1697,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_1_5",
-                  "visibleIf": "{panel.question8_1_4} = 't1'",
+                  "visibleIf": "{panel.familial_breast_cancer_degree} = 't1'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1698,7 +1718,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_1_5_t2",
-                  "visibleIf": "{panel.question8_1_4} = 't2'",
+                  "visibleIf": "{panel.familial_breast_cancer_degree} = 't2'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1723,7 +1743,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_1_5_t3",
-                  "visibleIf": "{panel.question8_1_4} = 't3'",
+                  "visibleIf": "{panel.familial_breast_cancer_degree} = 't3'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1747,8 +1767,8 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_1_6",
-                  "visibleIf": "{panel.question8_1_0} = 'twoSide'",
+                  "name": "familial_breast_cancer_age_right",
+                  "visibleIf": "{panel.familial_breast_cancer_side} = 'twoSide'",
                   "title": "سن ابتلاء به سرطان پستان راست",
                   "isRequired": true,
                   "inputType": "number",
@@ -1759,21 +1779,9 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_1_6_year",
-                  "visibleIf": "{panel.question8_1_0} = 'twoSide'",
+                  "name": "familial_breast_cancer_age_left",
+                  "visibleIf": "{panel.familial_breast_cancer_side} = 'twoSide'",
                   "startWithNewLine": false,
-                  "title": "سال تولد",
-                  "isRequired": true,
-                  "inputType": "number",
-                  "min": 1300,
-                  "max": 1402,
-                  "minErrorText": "حداقل مقدار سال 1300 است",
-                  "maxErrorText": "حداکثر مقدار سال 1402 است"
-                },
-                {
-                  "type": "text",
-                  "name": "question8_1_7",
-                  "visibleIf": "{panel.question8_1_0} = 'twoSide'",
                   "title": "سن ابتلاء به سرطان پستان چپ",
                   "isRequired": true,
                   "inputType": "number",
@@ -1784,9 +1792,8 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_1_7_year",
-                  "visibleIf": "{panel.question8_1_0} = 'twoSide'",
-                  "startWithNewLine": false,
+                  "name": "familial_breast_cancer_birth_year",
+                  "visibleIf": "{panel.familial_breast_cancer_side} = 'twoSide'",
                   "title": "سال تولد",
                   "isRequired": true,
                   "inputType": "number",
@@ -1797,8 +1804,8 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_1_8",
-                  "visibleIf": "{panel.question8_1_0} = 'oneSide'",
+                  "name": "familial_breast_cancer_age",
+                  "visibleIf": "{panel.familial_breast_cancer_side} = 'oneSide'",
                   "title": "سن ابتلاء به سرطان پستان",
                   "isRequired": true,
                   "inputType": "number",
@@ -1809,8 +1816,8 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_1_8_year",
-                  "visibleIf": "{panel.question8_1_0} = 'oneSide'",
+                  "name": "familial_breast_cancer_birth_year1",
+                  "visibleIf": "{panel.familial_breast_cancer_side} = 'oneSide'",
                   "startWithNewLine": false,
                   "title": "سال تولد",
                   "isRequired": true,
@@ -1835,18 +1842,18 @@ const surveyJson = {
         {
           "type": "panel",
           "name": "panel_8_2",
-          "visibleIf": "{question8} = true",
+          "visibleIf": "{familial_cancer_history} = true",
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question8_2",
+              "name": "familial_ovary_cancer_history",
               "title": "سابقه ابتلا به سرطان تخمدان در خانواده",
               "isRequired": true,
               "validators": [
                 {
                   "type": "expression",
                   "text": "حداقل یکی از سوابق میبایست تکمیل گردد",
-                  "expression": "{question8_1} <> false or {question8_2} <> false or {question8_3} <> false or {question8_4} <> false or {question8_5} <> false  or {question8_6} <> false"
+                  "expression": "{familial_breast_cancer_history} <> false or {familial_ovary_cancer_history} <> false or {familial_pancreatic_cancer_history} <> false or {familial_prostate_cancer_history} <> false or {familial_men_breast_cancer_history} <> false  or {familial_other_cancer_history} <> false"
                 }
               ],
               "choices": [
@@ -1862,13 +1869,13 @@ const surveyJson = {
             },
             {
               "type": "paneldynamic",
-              "name": "panelQ8_2",
-              "visibleIf": "{question8} = true and {question8_2} = true",
+              "name": "familial_ovary_cancer_list",
+              "visibleIf": "{familial_cancer_history} = true and {familial_ovary_cancer_history} = true",
               "title": "اطلاعات فرد مبتلا",
               "templateElements": [
                 {
                   "type": "dropdown",
-                  "name": "question8_2_1",
+                  "name": "familial_ovary_cancer_degree",
                   "title": "درجه فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1889,7 +1896,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_2_2",
-                  "visibleIf": "{panel.question8_2_1} = 't1'",
+                  "visibleIf": "{panel.familial_ovary_cancer_degree} = 't1'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1910,7 +1917,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_2_2_t2",
-                  "visibleIf": "{panel.question8_2_1} = 't2'",
+                  "visibleIf": "{panel.familial_ovary_cancer_degree} = 't2'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1935,7 +1942,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_2_2_t3",
-                  "visibleIf": "{panel.question8_2_1} = 't3'",
+                  "visibleIf": "{panel.familial_ovary_cancer_degree} = 't3'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -1959,8 +1966,8 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_2_3",
-                  "title": "سن ابتلاء به سرطان پستان",
+                  "name": "familial_ovary_cancer_age",
+                  "title": "سن ابتلاء",
                   "isRequired": true,
                   "inputType": "number",
                   "min": 25,
@@ -1970,7 +1977,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_2_3_year",
+                  "name": "familial_ovary_cancer_birth_year",
                   "startWithNewLine": false,
                   "title": "سال تولد",
                   "isRequired": true,
@@ -1995,18 +2002,18 @@ const surveyJson = {
         {
           "type": "panel",
           "name": "panel_8_3",
-          "visibleIf": "{question8} = true",
+          "visibleIf": "{familial_cancer_history} = true",
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question8_3",
+              "name": "familial_pancreatic_cancer_history",
               "title": "سابقه ابتلا به سرطان پانکراس در خانواده",
               "isRequired": true,
               "validators": [
                 {
                   "type": "expression",
                   "text": "حداقل یکی از سوابق میبایست تکمیل گردد",
-                  "expression": "{question8_1} <> false or {question8_2} <> false or {question8_3} <> false or {question8_4} <> false or {question8_5} <> false  or {question8_6} <> false"
+                  "expression": "{familial_breast_cancer_history} <> false or {familial_ovary_cancer_history} <> false or {familial_pancreatic_cancer_history} <> false or {familial_prostate_cancer_history} <> false or {familial_men_breast_cancer_history} <> false  or {familial_other_cancer_history} <> false"
                 }
               ],
               "choices": [
@@ -2022,13 +2029,13 @@ const surveyJson = {
             },
             {
               "type": "paneldynamic",
-              "name": "panelQ8_3",
-              "visibleIf": "{question8} = true and {question8_3} = true",
+              "name": "familial_pancreatic_cancer_list",
+              "visibleIf": "{familial_cancer_history} = true and {familial_pancreatic_cancer_history} = true",
               "title": "اطلاعات فرد مبتلا",
               "templateElements": [
                 {
                   "type": "dropdown",
-                  "name": "question8_3_1",
+                  "name": "familial_pancreatic_cancer_degree",
                   "title": "درجه فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2049,7 +2056,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_3_2",
-                  "visibleIf": "{panel.question8_3_1} = 't1'",
+                  "visibleIf": "{panel.familial_pancreatic_cancer_degree} = 't1'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2082,7 +2089,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_3_2_t2",
-                  "visibleIf": "{panel.question8_3_1} = 't2'",
+                  "visibleIf": "{panel.familial_pancreatic_cancer_degree} = 't2'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2123,7 +2130,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_3_2_t3",
-                  "visibleIf": "{panel.question8_3_1} = 't3'",
+                  "visibleIf": "{panel.familial_pancreatic_cancer_degree} = 't3'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2163,7 +2170,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_3_3",
+                  "name": "familial_pancreatic_cancer_age",
                   "title": "سن ابتلا",
                   "isRequired": true,
                   "inputType": "number",
@@ -2174,7 +2181,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_3_3_year",
+                  "name": "familial_pancreatic_cancer_birth_year",
                   "startWithNewLine": false,
                   "title": "سال تولد",
                   "isRequired": true,
@@ -2199,18 +2206,18 @@ const surveyJson = {
         {
           "type": "panel",
           "name": "panel_8_4",
-          "visibleIf": "{question8} = true",
+          "visibleIf": "{familial_cancer_history} = true",
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question8_4",
+              "name": "familial_prostate_cancer_history",
               "title": "سابقه ابتلا به سرطان پروستات در خانواده",
               "isRequired": true,
               "validators": [
                 {
                   "type": "expression",
                   "text": "حداقل یکی از سوابق میبایست تکمیل گردد",
-                  "expression": "{question8_1} <> false or {question8_2} <> false or {question8_3} <> false or {question8_4} <> false or {question8_5} <> false  or {question8_6} <> false"
+                  "expression": "{familial_breast_cancer_history} <> false or {familial_ovary_cancer_history} <> false or {familial_pancreatic_cancer_history} <> false or {familial_prostate_cancer_history} <> false or {familial_men_breast_cancer_history} <> false  or {familial_other_cancer_history} <> false"
                 }
               ],
               "choices": [
@@ -2226,13 +2233,13 @@ const surveyJson = {
             },
             {
               "type": "paneldynamic",
-              "name": "panelQ8_4",
-              "visibleIf": "{question8} = true and {question8_4} = true",
+              "name": "familial_prostate_cancer_list",
+              "visibleIf": "{familial_cancer_history} = true and {familial_prostate_cancer_history} = true",
               "title": "اطلاعات فرد مبتلا",
               "templateElements": [
                 {
                   "type": "dropdown",
-                  "name": "question8_4_1",
+                  "name": "familial_prostate_cancer_degree",
                   "title": "درجه فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2253,7 +2260,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_4_2",
-                  "visibleIf": "{panel.question8_4_1} = 't1'",
+                  "visibleIf": "{panel.familial_prostate_cancer_degree} = 't1'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2274,7 +2281,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_4_2_t2",
-                  "visibleIf": "{panel.question8_4_1} = 't2'",
+                  "visibleIf": "{panel.familial_prostate_cancer_degree} = 't2'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2299,7 +2306,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_4_2_t3",
-                  "visibleIf": "{panel.question8_4_1} = 't3'",
+                  "visibleIf": "{panel.familial_prostate_cancer_degree} = 't3'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2323,7 +2330,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_4_3",
+                  "name": "familial_prostate_cancer_age",
                   "title": "سن ابتلا",
                   "isRequired": true,
                   "inputType": "number",
@@ -2334,7 +2341,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_4_3_year",
+                  "name": "familial_prostate_cancer_birth_year",
                   "startWithNewLine": false,
                   "title": "سال تولد",
                   "isRequired": true,
@@ -2359,18 +2366,18 @@ const surveyJson = {
         {
           "type": "panel",
           "name": "panel_8_5",
-          "visibleIf": "{question8} = true",
+          "visibleIf": "{familial_cancer_history} = true",
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question8_5",
+              "name": "familial_men_breast_cancer_history",
               "title": "سابقه ابتلا به سرطان پستان در مردان خانواده",
               "isRequired": true,
               "validators": [
                 {
                   "type": "expression",
                   "text": "حداقل یکی از سوابق میبایست تکمیل گردد",
-                  "expression": "{question8_1} <> false or {question8_2} <> false or {question8_3} <> false or {question8_4} <> false or {question8_5} <> false  or {question8_6} <> false"
+                  "expression": "{familial_breast_cancer_history} <> false or {familial_ovary_cancer_history} <> false or {familial_pancreatic_cancer_history} <> false or {familial_prostate_cancer_history} <> false or {familial_men_breast_cancer_history} <> false  or {familial_other_cancer_history} <> false"
                 }
               ],
               "choices": [
@@ -2386,13 +2393,13 @@ const surveyJson = {
             },
             {
               "type": "paneldynamic",
-              "name": "panelQ8_5",
-              "visibleIf": "{question8} = true and {question8_5} = true",
+              "name": "familial_men_breast_cancer_list",
+              "visibleIf": "{familial_cancer_history} = true and {familial_men_breast_cancer_history} = true",
               "title": "اطلاعات فرد مبتلا",
               "templateElements": [
                 {
                   "type": "dropdown",
-                  "name": "question8_5_1",
+                  "name": "familial_men_breast_cancer_degree",
                   "title": "درجه فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2413,7 +2420,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_5_2",
-                  "visibleIf": "{panel.question8_5_1} = 't1'",
+                  "visibleIf": "{panel.familial_men_breast_cancer_degree} = 't1'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2434,7 +2441,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_5_2_t2",
-                  "visibleIf": "{panel.question8_5_1} = 't2'",
+                  "visibleIf": "{panel.familial_men_breast_cancer_degree} = 't2'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2459,7 +2466,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_5_2_t3",
-                  "visibleIf": "{panel.question8_5_1} = 't3'",
+                  "visibleIf": "{panel.familial_men_breast_cancer_degree} = 't3'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2483,7 +2490,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_5_3",
+                  "name": "familial_men_breast_cancer_age",
                   "title": "سن ابتلا",
                   "isRequired": true,
                   "inputType": "number",
@@ -2494,7 +2501,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_5_3_year",
+                  "name": "familial_men_breast_cancer_birth_year",
                   "startWithNewLine": false,
                   "title": "سال تولد",
                   "isRequired": true,
@@ -2519,18 +2526,18 @@ const surveyJson = {
         {
           "type": "panel",
           "name": "panel_8_6",
-          "visibleIf": "{question8} = true",
+          "visibleIf": "{familial_cancer_history} = true",
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question8_6",
+              "name": "familial_other_cancer_history",
               "title": "سابقه ابتلا به سرطان های دیگر در خانواده",
               "isRequired": true,
               "validators": [
                 {
                   "type": "expression",
                   "text": "حداقل یکی از سوابق میبایست تکمیل گردد",
-                  "expression": "{question8_1} <> false or {question8_2} <> false or {question8_3} <> false or {question8_4} <> false or {question8_5} <> false  or {question8_6} <> false"
+                  "expression": "{familial_breast_cancer_history} <> false or {familial_ovary_cancer_history} <> false or {familial_pancreatic_cancer_history} <> false or {familial_prostate_cancer_history} <> false or {familial_men_breast_cancer_history} <> false  or {familial_other_cancer_history} <> false"
                 }
               ],
               "choices": [
@@ -2546,13 +2553,13 @@ const surveyJson = {
             },
             {
               "type": "paneldynamic",
-              "name": "panelQ8_6",
-              "visibleIf": "{question8} = true and {question8_6} = true",
+              "name": "familial_other_cancer_list",
+              "visibleIf": "{familial_cancer_history} = true and {familial_other_cancer_history} = true",
               "title": "اطلاعات فرد مبتلا",
               "templateElements": [
                 {
                   "type": "dropdown",
-                  "name": "question8_6_1",
+                  "name": "familial_other_cancer_degree",
                   "title": "درجه فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2573,7 +2580,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_6_2",
-                  "visibleIf": "{panel.question8_6_1} = 't1'",
+                  "visibleIf": "{panel.familial_other_cancer_degree} = 't1'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2594,7 +2601,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_6_2_t2",
-                  "visibleIf": "{panel.question8_6_1} = 't2'",
+                  "visibleIf": "{panel.familial_other_cancer_degree} = 't2'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2619,7 +2626,7 @@ const surveyJson = {
                 {
                   "type": "dropdown",
                   "name": "question8_6_2_t3",
-                  "visibleIf": "{panel.question8_6_1} = 't3'",
+                  "visibleIf": "{panel.familial_other_cancer_degree} = 't3'",
                   "title": "نسبت فامیلی",
                   "isRequired": true,
                   "choices": [
@@ -2643,7 +2650,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_6_3",
+                  "name": "familial_other_cancer_age",
                   "title": "سن ابتلا",
                   "isRequired": true,
                   "inputType": "number",
@@ -2654,7 +2661,7 @@ const surveyJson = {
                 },
                 {
                   "type": "text",
-                  "name": "question8_6_3_year",
+                  "name": "familial_other_cancer_birth_year",
                   "startWithNewLine": false,
                   "title": "سال تولد",
                   "isRequired": true,
@@ -2717,7 +2724,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question9",
+              "name": "q18",
               "title": "آیا در خودآزمایی پستان، احساس توده(غده یا برجستگی غیرمعمول) در پستان می‌کنید؟",
               "isRequired": true,
               "choices": [
@@ -2742,7 +2749,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question9_1_1",
-              "visibleIf": "{question9} anyof ['leftSide', 'bothSide']",
+              "visibleIf": "{q18} anyof ['leftSide', 'bothSide']",
               "title": "محل توده پستان چپ",
               "isRequired": true,
               "choices": [
@@ -2771,7 +2778,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question9_2_1",
-              "visibleIf": "{question9} anyof ['bothSide', 'rightSide']",
+              "visibleIf": "{q18} anyof ['bothSide', 'rightSide']",
               "title": "محل توده پستان راست",
               "isRequired": true,
               "choices": [
@@ -2805,7 +2812,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question10",
+              "name": "q19",
               "title": "آیا در خودآزمایی، احساس توده(غده یا برجستگی غیرمعمول) در زیربغل می کنید؟",
               "isRequired": true,
               "choices": [
@@ -2835,7 +2842,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question11",
+              "name": "q20",
               "title": "آیا در خودآزمایی، در ظاهر کلی پستان تغییراتی مشاهده می کنید؟",
               "isRequired": true,
               "choices": [
@@ -2860,7 +2867,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question11_1",
-              "visibleIf": "{question11} anyof ['leftSide', 'bothSide']",
+              "visibleIf": "{q20} anyof ['leftSide', 'bothSide']",
               "title": "تغییرات ظاهری پستان چپ",
               "isRequired": true,
               "choices": [
@@ -2881,7 +2888,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question11_2",
-              "visibleIf": "{question11} anyof ['rightSide', 'bothSide']",
+              "visibleIf": "{q20} anyof ['rightSide', 'bothSide']",
               "title": "تغییرات ظاهری پستان راست",
               "isRequired": true,
               "choices": [
@@ -2907,7 +2914,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question12",
+              "name": "q21",
               "title": "آیا در خودآزمایی، در پوست پستان تغییراتی مشاهده می کنید؟",
               "isRequired": true,
               "choices": [
@@ -2932,7 +2939,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question12_1_1",
-              "visibleIf": "{question12} anyof ['leftSide', 'bothSide']",
+              "visibleIf": "{q21} anyof ['leftSide', 'bothSide']",
               "title": "تغییرات پستان چپ را چگونه توصیف می کنید؟",
               "isRequired": true,
               "choices": [
@@ -2969,7 +2976,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question12_2_1",
-              "visibleIf": "{question12} anyof ['rightSide', 'bothSide']",
+              "visibleIf": "{q21} anyof ['rightSide', 'bothSide']",
               "title": "تغییرات پستان راست را چگونه توصیف می کنید؟",
               "isRequired": true,
               "choices": [
@@ -3011,7 +3018,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question99",
+              "name": "q22",
               "title": "آیا در خودآزمایی، در نوک پستان تغییراتی مشاهده می کنید؟",
               "isRequired": true,
               "choices": [
@@ -3036,7 +3043,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question99_1_1",
-              "visibleIf": "{question99} anyof ['rightSide', 'leftSide', 'bothSide']",
+              "visibleIf": "{q22} anyof ['rightSide', 'leftSide', 'bothSide']",
               "title": "این تغییرات را چگونه توصیف می کنید؟",
               "isRequired": true,
               "choices": [
@@ -3070,7 +3077,7 @@ const surveyJson = {
           "elements": [
             {
               "type": "radiogroup",
-              "name": "question13",
+              "name": "q23",
               "title": "آیا در خودآزمایی، نوک پستان ترشحاتی دارد؟",
               "isRequired": true,
               "choices": [
@@ -3095,7 +3102,7 @@ const surveyJson = {
             {
               "type": "checkbox",
               "name": "question13_1_1",
-              "visibleIf": "{question13} anyof ['rightSide', 'leftSide', 'bothSide']",
+              "visibleIf": "{q23} anyof ['rightSide', 'leftSide', 'bothSide']",
               "title": "این ترشحات چگونه است؟",
               "isRequired": true,
               "choices": [
