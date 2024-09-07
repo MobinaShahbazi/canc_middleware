@@ -1,0 +1,32 @@
+stages:
+  - deploy
+
+variables:
+#  GIT_CURL_VERBOSE: 1
+#  GIT_TRACE: 1
+  HOST_SSH_IP_ADDR: 10.1.1.20
+  HOST_SSH_USER: vst
+  HOST_DOCKER_COMPOSE: /home/vst/docker/disease-screening/cancer-screening-deployment/docker-compose.yml
+  DOCKER_REGISTRY: pdr.vista-group.ir
+  PROJECT_NAME: projects/ihio
+  IMAGE_NAME: pdr.hexatech.ir/canc-screening-middleware
+
+deploy:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+  stage: deploy
+  services:
+    - '$DOCKER_REGISTRY/docker:dind'
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $HOST_SSH_IP_ADDR >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - echo $IMAGE_NAME
+    - docker build -t $IMAGE_NAME .
+    - docker save $IMAGE_NAME | gzip | ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR docker load
+    - ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR "docker-compose -f $HOST_DOCKER_COMPOSE up -d"
