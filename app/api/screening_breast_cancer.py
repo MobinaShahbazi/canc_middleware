@@ -22,8 +22,8 @@ class BreastCancerScreening(APIBaseClass):
         self.modified_process_model_identifier = 'screenings:breast-cancer'
 
     def get_survey(self, request: Request):
-        # form_name = "breast-cancer-screening-v1.js"
-        form_name = 'test-form.js'
+        form_name = "breast-cancer-screening-v1.js"
+        # form_name = 'test-form.js'
         form_submission_url = "http://localhost:42420/screenings/breast-cancer/v1/submit"
         return templates.TemplateResponse("form-submission.html",
                                           context={'request': request,
