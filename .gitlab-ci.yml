@@ -8,9 +8,9 @@ variables:
   HOST_SSH_USER: vst
   DOCKER_COMPOSE_ENV: /home/vst/docker/disease-screening/cancer-screening-deployment/.env.stg
   HOST_DOCKER_COMPOSE: /home/vst/docker/disease-screening/cancer-screening-deployment/docker-compose.yml
-  DOCKER_REGISTRY: pdr.vista-group.ir
+  DOCKER_REGISTRY: pdr.hexatech.ir
   PROJECT_NAME: projects/ihio
-  IMAGE_NAME: pdr.vista-group.ir/canc-screening-middleware
+  IMAGE_NAME: pdr.hexatech.ir/canc-screening-middleware
 
 deploy:
   rules:
