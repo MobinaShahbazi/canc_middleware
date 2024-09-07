@@ -1,7 +1,6 @@
 import requests
 import logging
-from .auth import is_token_expired
-from .get_token import get_token_instance
+from .auth import is_token_expired, get_token_instance
 
 
 class SpiffArenaAPIClient:
@@ -48,7 +47,6 @@ class SpiffArenaAPIClient:
         with requests.Session() as session:
             response = session.send(prepared)
         return response.json()
-
 
     def direct_call(self, name, body):
         response = requests.post(

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+</head>
+<body>
+    <h1>Results</h1>
+    <div id="resultDisplay"></div>
+
+    <script>
+        // Retrieve the result from session storage
+        const result = JSON.parse(sessionStorage.getItem('result'));
+
+        // Display the result on the page
+        const resultDisplay = document.getElementById('resultDisplay');
+        if (result) {
+            resultDisplay.innerHTML = `<p>${result.message}</p><p>Data: ${result.data.data}</p>`;
+        } else {
+            resultDisplay.innerHTML = '<p>No result found.</p>';
+        }
+    </script>
+</body>
+</html>
