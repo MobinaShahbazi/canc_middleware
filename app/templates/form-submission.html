@@ -10,6 +10,7 @@
     <script type="text/javascript" src="{{ url_for('static', path='/forms/'+form_name) }}"></script>
     <script type="text/javascript">
         const saveSurveyUrl = "{{ form_submission_url }}";
+        const displayResultsUrl = "{{ url_for('static', path='/pages/form-result.html') }}"
     </script>
     <script type="text/javascript" src="{{ url_for('static', path='/js/survey.js') }}"></script>
 </head>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+</head>
+<body>
+<h1>Results</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody id="jsonTable">
+    </tbody>
+</table>
+<script>
+    // Retrieve the result from session storage
+    const jsonData = JSON.parse(sessionStorage.getItem('result'));
+    const tableBody = document.getElementById("jsonTable");
+    const taskData = jsonData['task_data']
+    console.log(taskData)
+    for (let key in taskData) {
+        if (taskData.hasOwnProperty(key)) {
+            let row = `<tr>
+                           <td><b>${key}</b></td>
+                           <td>${taskData[key]}</td>
+                       </tr>`;
+            tableBody.innerHTML += row;
+        }
+    }
+</script>
+</body>
+</html>
