@@ -23,7 +23,7 @@ class BreastCancerScreening(APIBaseClass):
 
     def get_survey(self, request: Request):
         form_name = "breast-cancer-screening-v1.js"
-        # form_name = 'test-form.js' This is for testing
+        # form_name = 'test-form.js'
         form_submission_url = f"{app_config.spiff_arena_base_url}/screenings/breast-cancer/v1/submit"
         return templates.TemplateResponse("form-submission.html",
                                           context={'request': request,
