@@ -5,7 +5,7 @@ from app.templates import templates
 from . import APIBaseClass
 from app.settings import spiff_client
 from fastapi.responses import HTMLResponse
-
+from fastapi import status
 
 class BreastCancerScreening(APIBaseClass):
 
@@ -30,11 +30,14 @@ class BreastCancerScreening(APIBaseClass):
                                                    'form_name': form_name,
                                                    'form_submission_url': form_submission_url})
 
-    def submit(self, request: schemas.FormBase) -> dict:
+    def submit(self, request: schemas.FormBase):
         mw = spiff_client
         obj_in_data = jsonable_encoder(request)
         result = mw.start_bpmn(obj_in_data['survey_response'])
-        return result
+        return schemas.BaseResponseCamelCase(status='SUCCESS',
+                                             message_code=result['status_code'],
+                                             message='',
+                                             body=result['body'])
 
     def create_process_instance(self):
         results = spiff_client.get_process_instances(

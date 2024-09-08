@@ -10,6 +10,7 @@ class SpiffArenaAPIClient:
         self.base_api_url = settings.spiff_arena_base_api_url
         self.base_url = settings.spiff_arena_base_url
         self.project_location = 'canc:test'                   # change
+        self.status_code = 0
 
         if not settings.spiff_arena_token:
             self.token = self.get_token()
@@ -102,9 +103,11 @@ class SpiffArenaAPIClient:
             headers={'Authorization': self.access_token}
         )
         result_task_data = response_task_data.json()
+        self.status_code = response_task_data.status_code
         return result_task_data["data"]
 
     def start_bpmn(self, input_obj):
+        data = {}
         result_direct = self.direct_call('start', {})
         instance_id = result_direct['process_instance']['id']
 
@@ -112,9 +115,10 @@ class SpiffArenaAPIClient:
         
         result_ready = self.trigger_process(instance_id)
         task_id = result_ready["results"][0]["id"]
-    
-        self_assessment_data = reform_info(input_obj)
+
+        self_assessment_data = reform_info(input_obj, instance_id)
 
         self.put_data(self_assessment_data, instance_id, task_id)
-        data = self.get_task_data(instance_id, task_id)
-        return json.dumps(data)
+        data['body'] = self.get_task_data(instance_id, task_id)
+        data['status_code'] = self.status_code
+        return data

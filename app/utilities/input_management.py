@@ -2,8 +2,9 @@ import datetime
 import json
 
 
-def reform_info(input_obj):
+def reform_info(input_obj, instance_id):
     self_assessment = {}
+    self_assessment['instance_id'] = instance_id
     self_assessment['birth_month'] = input_obj['birth_month']
     self_assessment['birth_year'] = input_obj['birth_year']
     self_assessment['age'] = datetime.datetime.now().year - 621 - input_obj['birth_year']
