@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from app import schemas
 from app.templates import templates
 from . import APIBaseClass
-from app.settings import spiff_client
+from app.settings import spiff_client, app_config
 from fastapi.responses import HTMLResponse
 
 
@@ -24,7 +24,7 @@ class BreastCancerScreening(APIBaseClass):
     def get_survey(self, request: Request):
         form_name = "breast-cancer-screening-v1.js"
         # form_name = 'test-form.js'
-        form_submission_url = "http://localhost:42420/screenings/breast-cancer/v1/submit"
+        form_submission_url = f"{app_config.spiff_arena_base_url}/screenings/breast-cancer/v1/submit"
         return templates.TemplateResponse("form-submission.html",
                                           context={'request': request,
                                                    'form_name': form_name,
