@@ -1,13 +1,15 @@
 import requests
 import logging
+import json
 from .auth import is_token_expired, get_token_instance
-# from utilities.input_management import reform_info
+from app.utilities.input_management import reform_info
 
 class SpiffArenaAPIClient:
 
     def __init__(self, settings):
         self.base_api_url = settings.spiff_arena_base_api_url
         self.base_url = settings.spiff_arena_base_url
+        self.project_location = 'canc:test'                   # change
 
         if not settings.spiff_arena_token:
             self.token = self.get_token()
@@ -115,4 +117,4 @@ class SpiffArenaAPIClient:
 
         self.put_data(self_assessment_data, instance_id, task_id)
         data = self.get_task_data(instance_id, task_id)
-        return data
+        return json.dumps(data)

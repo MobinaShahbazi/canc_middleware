@@ -204,5 +204,4 @@ def reform_info(input_obj):
         total_cancer_number += 1
     self_assessment['total_cancer_number'] = total_cancer_number
 
-    json_str = json.dumps(self_assessment)
-    return json_str
+    return self_assessment
