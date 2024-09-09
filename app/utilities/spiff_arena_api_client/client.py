@@ -105,12 +105,31 @@ class SpiffArenaAPIClient:
         instance_id = result_direct['process_instance']['id']
 
         # the process instance id should be saved
-        
+
         result_ready = self.trigger_process(instance_id)
         task_id = result_ready["results"][0]["id"]
-    
+
         self_assessment_data = reform_info(input_obj)
 
         self.put_data(self_assessment_data, instance_id, task_id)
-        data = self.get_task_data(instance_id, task_id)
+        data = self.get_task_data(instance_id, self.get_end_event_id(instance_id))
         return json.dumps(data)
+
+    def get_process_instance_status(self, instance_id):
+        response = requests.get(
+            url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}',
+            headers={'Authorization': self.access_token}
+        )
+        result = response.json()
+        return result["status"]
+
+    def get_end_event_id(self, instance_id):
+        response = requests.get(
+            url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}/task-info',
+            headers={'Authorization': self.access_token}
+        )
+        tasks = response.json()
+        for task in tasks:
+            if task["typename"] == "EndEvent":
+                end_event_id = task['guid']
+        return end_event_id

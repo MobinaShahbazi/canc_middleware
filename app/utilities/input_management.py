@@ -1,12 +1,13 @@
 import datetime
 import json
+from khayyam import JalaliDatetime
 
 
 def reform_info(input_obj):
     self_assessment = {}
     self_assessment['birth_month'] = input_obj['birth_month']
     self_assessment['birth_year'] = input_obj['birth_year']
-    self_assessment['age'] = datetime.datetime.now().year - 621 - input_obj['birth_year']
+    self_assessment['age'] = JalaliDatetime.now().year - input_obj['birth_year']
     self_assessment['province'] = input_obj['province']
 
     self_assessment['clinical_examination_history'] = input_obj['clinical_examination_history'] == "true"
@@ -162,8 +163,9 @@ def reform_info(input_obj):
 
     self_assessment['threshold_age'] = threshold_age
 
-    self_assessment['self_assessment_month'] = datetime.datetime.now().month
-    self_assessment['self_assessment_year'] = datetime.datetime.now().year
+    self_assessment['self_assessment_month'] = JalaliDatetime.now().month
+    self_assessment['self_assessment_year'] = JalaliDatetime.now().year
+
 
     self_assessment['q18'] = input_obj['q18']
     self_assessment['q19'] = input_obj['q19']
