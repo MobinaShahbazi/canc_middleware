@@ -10,6 +10,8 @@ class CommonSettings(BaseSettings):
 
     # Basic application configs
     app_port: int = 42420
+    app_host: str = 'http://localhost'
+    app_url: str = f'{app_host}:{app_port}'
 
     # General application configs
     app_name: str = 'Cancer Screening Middleware'

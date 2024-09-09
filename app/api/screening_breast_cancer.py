@@ -1,3 +1,5 @@
+import json
+
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
 from app import schemas
@@ -18,13 +20,16 @@ class BreastCancerScreening(APIBaseClass):
         self.router.add_api_route(f'{prefix}/submit', self.submit, methods=['POST'],
                                   tags=['Breast Cancer Screening'],
                                   description='Initiates screening process from the start with a message.')
+        self.router.add_api_route(f'{prefix}/process-instances', self.get_process_instance, methods=['GET'],
+                                  tags=['Breast Cancer Screening'],
+                                  description='Initiates screening process from the start with a message.')
 
         self.modified_process_model_identifier = 'screenings:breast-cancer'
 
     def get_survey(self, request: Request):
-        form_name = "breast-cancer-screening-v1.js"
-        # form_name = 'test-form.js'
-        form_submission_url = f"{app_config.spiff_arena_base_url}/screenings/breast-cancer/v1/submit"
+        # form_name = "breast-cancer-screening-v1.js"
+        form_name = 'test-form.js'
+        form_submission_url = f"{app_config.app_url}/screenings/breast-cancer/v1/submit"
         return templates.TemplateResponse("form-submission.html",
                                           context={'request': request,
                                                    'form_name': form_name,
@@ -34,9 +39,9 @@ class BreastCancerScreening(APIBaseClass):
         mw = spiff_client
         obj_in_data = jsonable_encoder(request)
         result = mw.start_bpmn(obj_in_data['survey_response'])
-        return result
+        return json.loads(result)
 
-    def create_process_instance(self):
+    def get_process_instance(self):
         results = spiff_client.get_process_instances(
             modified_process_model_identifier=self.modified_process_model_identifier
         )
