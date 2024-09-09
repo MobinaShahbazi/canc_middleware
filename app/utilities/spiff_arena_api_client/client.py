@@ -10,13 +10,7 @@ class SpiffArenaAPIClient:
         self.base_api_url = settings.spiff_arena_base_api_url
         self.base_url = settings.spiff_arena_base_url
         self.project_location = 'canc:test'                   # change
-        self.status_code = 0
-
-        if not settings.spiff_arena_token:
-            self.token = self.get_token()
-            self.access_token = self.token['access_token']
-        else:
-            self.access_token = settings.spiff_arena_token
+        self.token = self.get_token()
 
         # TODO: Project location or modified_process_group_id should be passed to the client on method calls.
         # project_location = app_config.project_location
@@ -31,18 +25,19 @@ class SpiffArenaAPIClient:
         except Exception as e:
             logging.log(level=logging.ERROR, msg='An error occured in obtaining Spiff Arena token')
             raise
-        # self.token = auth.token
         self.access_token = self.token['access_token']
 
+    @staticmethod
     def check_token(func):
-        def wrapper(self, *args, **kwargs):
+        def wrapped(self, *args, **kwargs):
             if is_token_expired(self.access_token, self.base_api_url):
                 logging.log(level=logging.WARNING, msg="BPMN Service token expired, obtaining a new one.")
                 self.get_token()
+            return func(self, *args, **kwargs)
 
-        return wrapper
+        return wrapped
 
-    # TODO this should be decorated with check_token as soon as getting token directly from spiff arena works
+    @check_token
     def http_request(self, method, url, body=None):
         full_url = f'{self.base_api_url}/{url}'
         request = requests.Request(method, full_url, json=body, headers={'Authorization': self.access_token})
@@ -60,7 +55,7 @@ class SpiffArenaAPIClient:
         results = response.json()
         return results
 
-    def get_process_instances(self, process_model_identifier):
+    def get_process_instances(self, modified_process_model_identifier):
         url = f'process-instances'
         body = {
             "report_metadata":
@@ -68,8 +63,8 @@ class SpiffArenaAPIClient:
                     "columns": [],
                     "filter_by": [
                         {
-                            "field_name": "process_model_identifier",
-                            "field_value": process_model_identifier
+                            "field_name": "modified_process_model_identifier",
+                            "field_value": modified_process_model_identifier
                         }
                     ],
                     "order_by": []
@@ -103,22 +98,38 @@ class SpiffArenaAPIClient:
             headers={'Authorization': self.access_token}
         )
         result_task_data = response_task_data.json()
-        self.status_code = response_task_data.status_code
         return result_task_data["data"]
 
     def start_bpmn(self, input_obj):
-        data = {}
         result_direct = self.direct_call('start', {})
         instance_id = result_direct['process_instance']['id']
 
         # the process instance id should be saved
-        
+
         result_ready = self.trigger_process(instance_id)
         task_id = result_ready["results"][0]["id"]
 
-        self_assessment_data = reform_info(input_obj, instance_id)
+        self_assessment_data = reform_info(input_obj)
 
         self.put_data(self_assessment_data, instance_id, task_id)
-        data['body'] = self.get_task_data(instance_id, task_id)
-        data['status_code'] = self.status_code
-        return data
+        data = self.get_task_data(instance_id, self.get_end_event_id(instance_id))
+        return json.dumps(data)
+
+    def get_process_instance_status(self, instance_id):
+        response = requests.get(
+            url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}',
+            headers={'Authorization': self.access_token}
+        )
+        result = response.json()
+        return result["status"]
+
+    def get_end_event_id(self, instance_id):
+        response = requests.get(
+            url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}/task-info',
+            headers={'Authorization': self.access_token}
+        )
+        tasks = response.json()
+        for task in tasks:
+            if task["typename"] == "EndEvent":
+                end_event_id = task['guid']
+        return end_event_id

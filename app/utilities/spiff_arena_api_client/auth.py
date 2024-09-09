@@ -16,6 +16,7 @@ def is_token_expired(token, base_url):
         return False
 
 class GetToken:
+
     username = "admin"
     password = "admin"
     realm_name = "spiffworkflow"
@@ -63,8 +64,8 @@ class GetToken:
             "client_id": self.backend_client_id,
         }
         self.openid_token_url = f"{self.backend_base_url}/openid/token"
-        # if self.openid_token_url is None:
-        #     raise Exception("Please specify the OPENID_TOKEN_URL")
+        if self.openid_token_url is None:
+            raise Exception("Please specify the OPENID_TOKEN_URL")
 
         response = requests.post(self.openid_token_url, data=data, headers=headers, timeout=15)
         return response.json()

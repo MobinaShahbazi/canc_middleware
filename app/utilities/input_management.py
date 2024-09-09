@@ -2,9 +2,8 @@ import datetime
 import json
 
 
-def reform_info(input_obj, instance_id):
+def reform_info(input_obj):
     self_assessment = {}
-    self_assessment['instance_id'] = instance_id
     self_assessment['birth_month'] = input_obj['birth_month']
     self_assessment['birth_year'] = input_obj['birth_year']
     self_assessment['age'] = datetime.datetime.now().year - 621 - input_obj['birth_year']
@@ -163,8 +162,11 @@ def reform_info(input_obj, instance_id):
 
     self_assessment['threshold_age'] = threshold_age
 
-    self_assessment['self_assessment_month'] = datetime.datetime.now().month
-    self_assessment['self_assessment_year'] = datetime.datetime.now().year
+    # self_assessment['self_assessment_month'] = datetime.datetime.now().month
+    # self_assessment['self_assessment_year'] = datetime.datetime.now().year
+
+    self_assessment['self_assessment_month'] = 6
+    self_assessment['self_assessment_year'] = 1403
 
     self_assessment['q18'] = input_obj['q18']
     self_assessment['q19'] = input_obj['q19']
