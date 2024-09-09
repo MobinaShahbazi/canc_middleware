@@ -22,7 +22,7 @@
     // Retrieve the result from session storage
     const jsonData = JSON.parse(sessionStorage.getItem('result'));
     const tableBody = document.getElementById("jsonTable");
-    const taskData = jsonData['task_data']
+    const taskData = jsonData
     console.log(taskData)
     for (let key in taskData) {
         if (taskData.hasOwnProperty(key)) {

@@ -162,8 +162,11 @@ def reform_info(input_obj):
 
     self_assessment['threshold_age'] = threshold_age
 
-    self_assessment['self_assessment_month'] = datetime.datetime.now().month
-    self_assessment['self_assessment_year'] = datetime.datetime.now().year
+    # self_assessment['self_assessment_month'] = datetime.datetime.now().month
+    # self_assessment['self_assessment_year'] = datetime.datetime.now().year
+
+    self_assessment['self_assessment_month'] = 6
+    self_assessment['self_assessment_year'] = 1403
 
     self_assessment['q18'] = input_obj['q18']
     self_assessment['q19'] = input_obj['q19']
@@ -204,5 +207,4 @@ def reform_info(input_obj):
         total_cancer_number += 1
     self_assessment['total_cancer_number'] = total_cancer_number
 
-    json_str = json.dumps(self_assessment)
-    return json_str
+    return self_assessment
