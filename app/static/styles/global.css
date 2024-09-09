@@ -1,5 +1,12 @@
+
+@font-face {
+  font-family: IRANSans;
+  src: url("../fonts/IRANSansWeb.ttf") format("truetype");
+}
+
 body {
   background-color: #777777; /* Replace with your desired background color */
+  font-family: IRANSans;
 }
 
 h1 {
