@@ -21,7 +21,10 @@ class SpiffArenaAPIClient:
         auth.backend_base_url = self.base_url
         try:
             self.token = auth.get_auth_token()
-            logging.log(level=logging.INFO, msg='BPMN service token obtained successfully')
+            if not is_token_expired(self.access_token, self.base_api_url):
+                logging.log(level=logging.INFO, msg='BPMN service token obtained successfully')
+            else:
+                raise ValueError('Aquired token is invalid.')
         except Exception as e:
             logging.log(level=logging.ERROR, msg='An error occured in obtaining Spiff Arena token')
             raise
