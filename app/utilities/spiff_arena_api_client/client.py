@@ -10,7 +10,7 @@ class SpiffArenaAPIClient:
         self.base_api_url = settings.spiff_arena_base_api_url
         self.base_url = settings.spiff_arena_base_url
         self.project_location = 'canc:test'                   # change
-        self.access_token = None
+        self.access_token = settings.spiff_arena_access_token
         self.token = self.get_token()
 
         # TODO: Project location or modified_process_group_id should be passed to the client on method calls.
@@ -20,6 +20,9 @@ class SpiffArenaAPIClient:
     def get_token(self):
         auth = get_token_instance
         auth.backend_base_url = self.base_url
+
+        if self.access_token and not is_token_expired(self.access_token, self.base_url):
+            return None
 
         try:
             self.token = auth.get_auth_token()
@@ -32,6 +35,7 @@ class SpiffArenaAPIClient:
         except Exception as e:
             logging.log(level=logging.ERROR, msg='An error occured in obtaining Spiff Arena token')
             raise
+        return None
 
     @staticmethod
     def check_token(func):
