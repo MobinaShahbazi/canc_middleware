@@ -2,7 +2,6 @@ import requests
 import logging
 import json
 from .auth import is_token_expired, get_token_instance
-from app.utilities.input_management import reform_info
 
 class SpiffArenaAPIClient:
 
@@ -99,21 +98,6 @@ class SpiffArenaAPIClient:
         )
         result_task_data = response_task_data.json()
         return result_task_data["data"]
-
-    def start_bpmn(self, input_obj):
-        result_direct = self.direct_call('start', {})
-        instance_id = result_direct['process_instance']['id']
-
-        # the process instance id should be saved
-
-        result_ready = self.trigger_process(instance_id)
-        task_id = result_ready["results"][0]["id"]
-
-        self_assessment_data = reform_info(input_obj)
-
-        self.put_data(self_assessment_data, instance_id, task_id)
-        data = self.get_task_data(instance_id, self.get_end_event_id(instance_id))
-        return json.dumps(data)
 
     def get_process_instance_status(self, instance_id):
         response = requests.get(

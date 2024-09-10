@@ -7,6 +7,7 @@ from app.templates import templates
 from . import APIBaseClass
 from app.settings import spiff_client, app_config
 from fastapi.responses import HTMLResponse
+from app.utilities.input_management import reform_info
 
 
 class BreastCancerScreening(APIBaseClass):
@@ -36,10 +37,23 @@ class BreastCancerScreening(APIBaseClass):
                                                    'form_submission_url': form_submission_url})
 
     def submit(self, request: schemas.FormBase) -> dict:
-        mw = spiff_client
         obj_in_data = jsonable_encoder(request)
-        result = mw.start_bpmn(obj_in_data['survey_response'])
+        result = self.start_bpmn(obj_in_data['survey_response'])
         return json.loads(result)
+
+    def start_bpmn(self, input_obj):
+        mw = spiff_client
+        result_direct = mw.direct_call('start', {})
+        instance_id = result_direct['process_instance']['id']
+
+        result_ready = mw.trigger_process(instance_id)
+        task_id = result_ready["results"][0]["id"]
+
+        self_assessment_data = reform_info(input_obj)
+
+        mw.put_data(self_assessment_data, instance_id, task_id)
+        data = mw.get_task_data(instance_id, mw.get_end_event_id(instance_id))
+        return json.dumps(data)
 
     def get_process_instance(self):
         results = spiff_client.get_process_instances(
