@@ -36,10 +36,12 @@ class BreastCancerScreening(APIBaseClass):
                                                    'form_name': form_name,
                                                    'form_submission_url': form_submission_url})
 
-    def submit(self, request: schemas.FormBase) -> dict:
+    def submit(self, request: schemas.FormBase) -> schemas.ProcessResponse:
         obj_in_data = jsonable_encoder(request)
-        result = self.start_bpmn(obj_in_data['survey_response'])
-        return json.loads(result)
+        body = self.start_bpmn(obj_in_data['survey_response'])
+        return schemas.ProcessResponse(status='SUCCESS',
+                                       message_code=200,
+                                       body=body)
 
     def start_bpmn(self, input_obj):
         mw = spiff_client
@@ -56,7 +58,7 @@ class BreastCancerScreening(APIBaseClass):
         instance_status = mw.get_process_instance_status(instance_id)
         result = {'data': data, 'process_instance_id': instance_id, 'process_instance_status': instance_status}
 
-        return json.dumps(result)
+        return result
 
     def get_process_instance(self):
         results = spiff_client.get_process_instances(

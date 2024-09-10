@@ -8,12 +8,13 @@ class FormBase(CamelCaseModel):
 
 
 class ProcessBody(CamelCaseModel):
-    process_id: int
-    status: str
+    process_instance_id: int
+    process_instance_status: str
+    data: dict
 
 
-# class ProcessResponse(BaseResponseCamelCase):
-#     body:
+class ProcessResponse(BaseResponseCamelCase):
+    body: ProcessBody
 
 
 class Form(BaseModel):
