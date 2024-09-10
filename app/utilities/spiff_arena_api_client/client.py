@@ -39,20 +39,49 @@ class SpiffArenaAPIClient:
     @check_token
     def http_request(self, method, url, body=None):
         full_url = f'{self.base_api_url}/{url}'
-        request = requests.Request(method, full_url, json=body, headers={'Authorization': self.access_token})
+        request = requests.Request(method, url, json=body, headers={'Authorization': self.access_token})
         prepared = request.prepare()
         with requests.Session() as session:
             response = session.send(prepared)
         return response.json()
 
     def direct_call(self, name, body):
-        response = requests.post(
-            url=f'{self.base_api_url}/messages/{name}?execution_mode=synchronous',
-            headers={'Authorization': self.access_token, 'Content-Type': 'application/json'},
-            json=body
-        )
-        results = response.json()
-        return results
+        response = self.http_request(method='POST', url=f'{self.base_api_url}/messages/{name}?execution_mode=synchronous', body=body)
+        return response
+
+    def trigger_process(self, instance_id):
+        response = self.http_request(method='GET', url=f'{self.base_api_url}/tasks?process_instance_id={instance_id}')
+        return response
+
+    def put_data(self, form, instance_id, task_id):
+        response = self.http_request(method='PUT', url=f'{self.base_api_url}/tasks/{instance_id}/{task_id}', body=form)
+        return response
+
+    def get_task_data(self, instance_id, task_id):
+        response = self.http_request(method='GET', url=f'{self.base_api_url}/task-data/{self.project_location}/{instance_id}/{task_id}')
+        return response["data"]
+
+    def get_process_instance_status(self, instance_id):
+        response = self.http_request(method='GET', url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}')
+
+        # response = requests.get(
+        #     url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}',
+        #     headers={'Authorization': self.access_token}
+        # )
+        # result = response.json()
+        return response["status"]
+
+    def get_end_event_id(self, instance_id):
+        # response = requests.get(
+        #     url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}/task-info',
+        #     headers={'Authorization': self.access_token}
+        # )
+        # tasks = response.json()
+        tasks = self.http_request(method='GET', url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}/task-info')
+        for task in tasks:
+            if task["typename"] == "EndEvent":
+                end_event_id = task['guid']
+        return end_event_id
 
     def get_process_instances(self, modified_process_model_identifier):
         url = f'process-instances'
@@ -72,48 +101,3 @@ class SpiffArenaAPIClient:
         }
         results = self.http_request(method='POST', url=url, body=body)
         return results
-
-    def trigger_process(self, instance_id):
-        response_trigger = requests.get(
-            url=f'{self.base_api_url}/tasks?process_instance_id={instance_id}',
-            headers={'Authorization': self.access_token}
-        )
-        result_trigger = response_trigger.json()
-        return result_trigger
-
-    def put_data(self, form, instance_id, task_id):
-        response_put = requests.put(
-            url=f'{self.base_api_url}/tasks/{instance_id}/{task_id}',
-            headers={'Authorization': self.access_token},
-            json=form
-        )
-        response_put.raise_for_status()
-        result_put = response_put.json()
-        return result_put
-
-    def get_task_data(self, instance_id, task_id):
-        response_task_data = requests.get(
-            url=f'{self.base_api_url}/task-data/{self.project_location}/{instance_id}/{task_id}',
-            headers={'Authorization': self.access_token}
-        )
-        result_task_data = response_task_data.json()
-        return result_task_data["data"]
-
-    def get_process_instance_status(self, instance_id):
-        response = requests.get(
-            url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}',
-            headers={'Authorization': self.access_token}
-        )
-        result = response.json()
-        return result["status"]
-
-    def get_end_event_id(self, instance_id):
-        response = requests.get(
-            url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}/task-info',
-            headers={'Authorization': self.access_token}
-        )
-        tasks = response.json()
-        for task in tasks:
-            if task["typename"] == "EndEvent":
-                end_event_id = task['guid']
-        return end_event_id

@@ -1,10 +1,19 @@
 from typing import Dict, Any, Optional, Type
 from pydantic import BaseModel
+from .base import BaseResponseCamelCase,CamelCaseModel
 
 
-class FormBase(BaseModel):
+class FormBase(CamelCaseModel):
     survey_response: dict
 
+
+class ProcessBody(CamelCaseModel):
+    process_id: int
+    status: str
+
+
+# class ProcessResponse(BaseResponseCamelCase):
+#     body:
 
 
 class Form(BaseModel):

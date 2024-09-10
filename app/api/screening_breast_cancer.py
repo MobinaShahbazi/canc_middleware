@@ -53,6 +53,7 @@ class BreastCancerScreening(APIBaseClass):
 
         mw.put_data(self_assessment_data, instance_id, task_id)
         data = mw.get_task_data(instance_id, mw.get_end_event_id(instance_id))
+
         return json.dumps(data)
 
     def get_process_instance(self):
