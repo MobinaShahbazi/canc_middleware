@@ -11,6 +11,7 @@ variables:
   DOCKER_REGISTRY: pdr.vista-group.ir
   PROJECT_NAME: projects/ihio
   IMAGE_NAME: pdr.vista-group.ir/canc-screening-middleware
+  CONTAINER_NAME: canc-screening-middleware
 
 deploy:
   rules:
@@ -30,5 +31,5 @@ deploy:
     - echo $IMAGE_NAME
     - docker build -t $IMAGE_NAME .
     - docker save $IMAGE_NAME | gzip | ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR docker load
-    - ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR "docker-compose -f $HOST_DOCKER_COMPOSE --profile middleware down"
+    - ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR "docker rm $CONTAINER_NAME -f"
     - ssh $HOST_SSH_USER@$HOST_SSH_IP_ADDR "docker-compose -f $HOST_DOCKER_COMPOSE --profile stg --env-file $DOCKER_COMPOSE_ENV up -d"

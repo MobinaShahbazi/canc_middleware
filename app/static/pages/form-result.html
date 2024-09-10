@@ -11,7 +11,7 @@
 <table>
     <thead>
     <tr>
-        <th>Key</th>
+        <th>Parameter</th>
         <th>Value</th>
     </tr>
     </thead>
@@ -22,7 +22,7 @@
     // Retrieve the result from session storage
     const jsonData = JSON.parse(sessionStorage.getItem('result'));
     const tableBody = document.getElementById("jsonTable");
-    const taskData = jsonData
+    const taskData = jsonData['body']['data']
     console.log(taskData)
     for (let key in taskData) {
         if (taskData.hasOwnProperty(key)) {
