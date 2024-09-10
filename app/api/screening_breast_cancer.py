@@ -53,8 +53,10 @@ class BreastCancerScreening(APIBaseClass):
 
         mw.put_data(self_assessment_data, instance_id, task_id)
         data = mw.get_task_data(instance_id, mw.get_end_event_id(instance_id))
+        instance_status = mw.get_process_instance_status(instance_id)
+        result = {'data': data, 'process_instance_id': instance_id, 'process_instance_status': instance_status}
 
-        return json.dumps(data)
+        return json.dumps(result)
 
     def get_process_instance(self):
         results = spiff_client.get_process_instances(

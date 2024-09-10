@@ -63,20 +63,9 @@ class SpiffArenaAPIClient:
 
     def get_process_instance_status(self, instance_id):
         response = self.http_request(method='GET', url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}')
-
-        # response = requests.get(
-        #     url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}',
-        #     headers={'Authorization': self.access_token}
-        # )
-        # result = response.json()
         return response["status"]
 
     def get_end_event_id(self, instance_id):
-        # response = requests.get(
-        #     url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}/task-info',
-        #     headers={'Authorization': self.access_token}
-        # )
-        # tasks = response.json()
         tasks = self.http_request(method='GET', url=f'{self.base_api_url}/process-instances/{self.project_location}/{instance_id}/task-info')
         for task in tasks:
             if task["typename"] == "EndEvent":
