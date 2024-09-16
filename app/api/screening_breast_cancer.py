@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from app import schemas
 from app.templates import templates
 from . import APIBaseClass
-from app.settings import spiff_client, app_config
+from app.settings import spiff_client, canc_client, app_config
 from fastapi.responses import HTMLResponse
 from app.utilities.input_management import reform_info
 
@@ -24,6 +24,9 @@ class BreastCancerScreening(APIBaseClass):
         self.router.add_api_route(f'{prefix}/process-instances', self.get_process_instance, methods=['GET'],
                                   tags=['Breast Cancer Screening'],
                                   description='Initiates screening process from the start with a message.')
+        self.router.add_api_route(f'{prefix}/get-data', self.get_screening_data_from_canc, methods=['GET'],
+                                  tags=['Breast Cancer Screening'],
+                                  description='Fetches data from Canc Backend')
 
         self.modified_process_model_identifier = 'screenings:breast-cancer'
 
@@ -64,8 +67,9 @@ class BreastCancerScreening(APIBaseClass):
         results = spiff_client.get_process_instances(
             modified_process_model_identifier=self.modified_process_model_identifier
         )
-        
         return results
 
+    def get_screening_data_from_canc(self):
+        return canc_client.get_screening_data()
 
 router = BreastCancerScreening().router
