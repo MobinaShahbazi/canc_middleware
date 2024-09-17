@@ -119,4 +119,5 @@ for i in range(len(df)):
             ignore_index=True)
 
 engine = sa.create_engine("postgresql://postgres:postgres@10.1.1.5:5432/spiffworkflow_result")
+result_df['familial_cancer_history'] = result_df['familial_cancer_history'].replace({'true':True, 'false':False}).astype(bool)
 result_df.to_sql('canc_breast_cancer_screening_all', con=engine, if_exists='replace')
