@@ -11,6 +11,7 @@ class ProcessBody(CamelCaseModel):
     process_instance_id: int
     process_instance_status: str
     data: dict
+    result: dict
 
 
 class ProcessResponse(BaseResponseCamelCase):

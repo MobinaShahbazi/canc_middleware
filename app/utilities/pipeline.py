@@ -41,6 +41,17 @@ province_code = {
 }
 
 
+def get_smoking_frequency(screening_respond):
+    if screening_respond['smoking_history'] == 'false':
+        freq = "4"
+    elif screening_respond['smoking_history'] == 'before':
+        freq = screening_respond['smoking_amount_past']
+    elif screening_respond['smoking_history'] == 'now':
+        freq = screening_respond['smoking_amount_current']
+
+    return freq
+
+
 def bmi_state(bmi):
     if bmi <= 18.4:
         return 'Underweight'
@@ -61,6 +72,7 @@ result_df = pd.DataFrame({
     'province_iso_code': pd.Series(dtype='str'),
     'child_birth_history': pd.Series(dtype='bool'),
     'smoking_history': pd.Series(dtype='bool'),
+    'smoking_frequency': pd.Series(dtype='str'),
     'contraceptive_history': pd.Series(dtype='bool'),
     'clinical_examination_history': pd.Series(dtype='bool'),
     'mammography_history': pd.Series(dtype='bool'),
@@ -73,27 +85,30 @@ result_df = pd.DataFrame({
     'age': pd.Series(dtype='int'),
     'bmi': pd.Series(dtype='str'),
     'participation_count': pd.Series(dtype='int'),
-    'time': pd.Series(dtype='datetime64[ns]'),
+    'self_assessment_time': pd.Series(dtype='datetime64[ns]'),
 
 })
-# bool_dict = {
-#     True: 'true',
-#     False: 'false'
-# }
-# print((df.loc[19]['result'][1]))
+
+bool_dict = {'true': True, 'false': False}
+
+print((df.loc[22]['result'][5]))
+
+result_df['clinical_examination_history'] = result_df['clinical_examination_history'].replace({'true': True, 'false': False}).astype(bool)
+result_df['mammography_history'] = result_df['mammography_history'].replace({'true': True, 'false': False}).astype(bool)
+result_df['ultrasound_history'] = result_df['ultrasound_history'].replace({'true': True, 'false': False}).astype(bool)
+
 for i in range(len(df)):
     for j in range(len(df.loc[i]['result'])):
         screening_respond = df.loc[i]['result'][j]['screeningRespond']
         data = df.loc[i]['result'][j]['data']
-        bmi = screening_respond['weight'] / screening_respond[
-            'height'] / screening_respond['height'] * 10000
 
-        date_time = df.loc[i]['result'][j]['createdDate']
-        date_string = "2024-09-17 08:30:00"
-        format_string = "%Y-%m-%d %H:%M:%S"
+        date_string = df.loc[i]['result'][j]['createdDate']
+        format_string = "%Y/%m/%d %H:%M"
         datetime_object = datetime.strptime(date_string, format_string)
 
-        self_awareness = screening_respond['clinical_examination_history'] or screening_respond['mammography_history'] or screening_respond['ultrasound_history']
+        self_awareness = screening_respond['clinical_examination_history'] or screening_respond[
+            'mammography_history'] or screening_respond['ultrasound_history']
+
         # familial_hist =
         result_df = result_df._append({
             'height': screening_respond['height'],
@@ -102,6 +117,7 @@ for i in range(len(df)):
             'province': screening_respond['province'],
             'child_birth_history': screening_respond['child_birth_history'],
             'smoking_history': screening_respond['smoking_history'],
+            'smoking_frequency': get_smoking_frequency(screening_respond),
             'contraceptive_history': screening_respond['contraceptive_history'],
             'clinical_examination_history': screening_respond['clinical_examination_history'],
             'mammography_history': screening_respond['mammography_history'],
@@ -112,12 +128,17 @@ for i in range(len(df)):
             'self_awareness': self_awareness,
             'risk_level': int(data['risk_level']),
             'age': data['age'],
-            'bmi': bmi_state(bmi),
+            'bmi': bmi_state(
+                screening_respond['weight'] / screening_respond['height'] / screening_respond['height'] * 10000),
             'participation_count': len(df.loc[i]['result']),
-            'time': datetime_object,
+            'self_assessment_time': datetime_object,
         },
             ignore_index=True)
 
+
 engine = sa.create_engine("postgresql://postgres:postgres@10.1.1.5:5432/spiffworkflow_result")
-result_df['familial_cancer_history'] = result_df['familial_cancer_history'].replace({'true':True, 'false':False}).astype(bool)
+result_df['familial_cancer_history'] = result_df['familial_cancer_history'].replace({'true': True, 'false': False}).astype(bool)
+result_df['self_awareness'] = result_df['self_awareness'].replace({'true': True, 'false': False}).astype(bool)
+result_df['clinical_examination_history'] = result_df['clinical_examination_history'].replace({'true': True, 'false': False}).astype(bool)
+result_df['mammography_history'] = result_df['mammography_history'].replace({'true': True, 'false': False}).astype(bool)
 result_df.to_sql('canc_breast_cancer_screening_all', con=engine, if_exists='replace')
