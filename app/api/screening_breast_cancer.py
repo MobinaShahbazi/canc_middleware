@@ -59,7 +59,7 @@ class BreastCancerScreening(APIBaseClass):
         mw.put_data(self_assessment_data, instance_id, task_id)
         data = mw.get_task_data(instance_id, mw.get_end_event_id(instance_id))
         instance_status = mw.get_process_instance_status(instance_id)
-        schedule = {'danger_group_message': data['danger_group_message']}
+        schedule = {'danger_group_message': data['danger_group_message'], 'assessment_visit_message': data['assessment_visit_message'], 'imaging_message': data['imaging_message'], 'consultations_after_imaging': data['consultations_after_imaging'], 'remark': data['remark']}
         body = {'data': data, 'process_instance_id': instance_id, 'process_instance_status': instance_status, 'result': {'schedule':schedule}}
 
 
