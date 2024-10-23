@@ -7,7 +7,7 @@ def reform_info(input_obj):
     self_assessment = {}
     self_assessment['birth_month'] = input_obj['birth_month']
     self_assessment['birth_year'] = input_obj['birth_year']
-    self_assessment['age'] = JalaliDatetime.now().year - input_obj['birth_year']
+    self_assessment['age'] = int(JalaliDatetime.now().year) - int(input_obj['birth_year'])
     self_assessment['province'] = input_obj['province']
 
     self_assessment['clinical_examination_history'] = input_obj['clinical_examination_history'] == "true"
@@ -39,7 +39,7 @@ def reform_info(input_obj):
 
     #  --------------------------------breast--------------------------------
     self_assessment['personal_breast_cancer_history'] = input_obj.get('personal_breast_cancer_history', 'false') != "false"  # oniSide or twoSide
-    self_assessment['personal_twoside_breast_cancer_history'] = input_obj.get('personal_breast_cancer_history', 'false') in ["oneSide", "twoSide"]  # check!!!!!!!!
+    self_assessment['personal_twoside_breast_cancer_history'] = input_obj.get('personal_breast_cancer_history', 'false') == "twoSide"
     self_assessment['month_of_diagnose_by_breast_cancer'] = input_obj.get('month_of_diagnose_by_breast_cancer', 1)  # oneSide
     self_assessment['year_of_diagnose_by_breast_cancer'] = input_obj.get('year_of_diagnose_by_breast_cancer', 400)  # oneSide
 
